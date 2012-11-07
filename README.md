@@ -1,13 +1,13 @@
 QuesterHeroesExt
 ================
 
-Heroes requirements / objectives and some other changes for Citizens1 Quester
+Heroes support and some other changes for Citizens1 Quester
 
 Modified classes in net.citizensnpcs.questers:
 
 * QuestType
 * api.QuestAPI
-* quests.types.ChatQuests - moved
+* quests.types.ChatQuests - moved and rewrited
 
 
 #### Warning
