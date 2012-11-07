@@ -1,0 +1,17 @@
+<project name="QuesterHeroesExt" basedir=".">
+
+    <property name="types.dir" value="C:\Users\Galaran\Desktop\McServer\plugins\Citizens\types"/>
+    <property name="classes.dir" value="out/production/QuesterHeroesExt"/>
+    <property name="jar.name" value="Quester_Heroes.jar"/>
+
+    <target name="build-jar">
+        <zip destfile="${jar.name}" basedir="${classes.dir}"/>
+    </target>
+
+    <target name="copy-jar" depends="build-jar">
+        <copy todir="${types.dir}" overwrite="true">
+            <fileset file="${jar.name}"/>
+        </copy>
+    </target>
+
+</project>
