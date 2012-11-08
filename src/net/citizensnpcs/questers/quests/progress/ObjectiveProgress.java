@@ -4,6 +4,7 @@ import net.citizensnpcs.questers.QuestCancelException;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.quests.Objective;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -70,10 +71,9 @@ public class ObjectiveProgress {
         return questUpdater;
     }
 
-    public String getStatusText(boolean override) throws QuestCancelException {
-        if (override && objective.getStatusText().isEmpty())
-            return "";
-        return objective.getStatusText().isEmpty() ? questUpdater.getStatus(this) : objective.getStatusText();
+    public String getStatusText() throws QuestCancelException {
+        String customStatus = objective.getStatusText();
+        return customStatus.isEmpty() ? questUpdater.getStatus(this) : ChatColor.GREEN + customStatus;
     }
 
     public void setAmountCompleted(int amountCompleted) {

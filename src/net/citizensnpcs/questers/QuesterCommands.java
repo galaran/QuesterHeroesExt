@@ -1,9 +1,6 @@
 package net.citizensnpcs.questers;
 
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.collect.Lists;
 import net.citizensnpcs.Settings;
 import net.citizensnpcs.commands.CommandHandler;
 import net.citizensnpcs.permissions.PermissionManager;
@@ -15,23 +12,20 @@ import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
 import net.citizensnpcs.questers.rewards.Reward;
 import net.citizensnpcs.resources.npclib.HumanNPC;
-import net.citizensnpcs.resources.sk89q.Command;
-import net.citizensnpcs.resources.sk89q.CommandContext;
-import net.citizensnpcs.resources.sk89q.CommandPermissions;
-import net.citizensnpcs.resources.sk89q.CommandRequirements;
-import net.citizensnpcs.resources.sk89q.ServerCommand;
+import net.citizensnpcs.resources.sk89q.*;
 import net.citizensnpcs.utils.HelpUtils;
 import net.citizensnpcs.utils.Messaging;
 import net.citizensnpcs.utils.PageUtils;
 import net.citizensnpcs.utils.PageUtils.PageInstance;
 import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @CommandRequirements(requireSelected = true, requireOwnership = true, requiredType = "quester")
 public class QuesterCommands extends CommandHandler {
@@ -393,15 +387,19 @@ public class QuesterCommands extends CommandHandler {
             if (profile.getProgress().isFullyCompleted()) {
                 player.sendMessage(ChatColor.AQUA + "Quest is completed.");
             } else {
+                String questCustomStatus = QuestManager.getQuest(profile.getQuest()).getCustomStatus();
+                if (!questCustomStatus.isEmpty()) {
+                    player.sendMessage(ChatColor.DARK_AQUA + questCustomStatus);
+                }
                 player.sendMessage(ChatColor.GREEN + "-" + ChatColor.AQUA + " Progress report " + ChatColor.GREEN + "-");
-                boolean override = QuestManager.getQuest(profile.getQuest()).sendProgressText(player);
                 for (ObjectiveProgress progress : profile.getProgress().getProgress()) {
                     if (progress == null)
                         continue;
                     try {
-                        String progressText = progress.getStatusText(override);
-                        if (!progressText.isEmpty())
-                            Messaging.send(player, StringUtils.wrap("  - ", ChatColor.WHITE) + progressText);
+                        String statusText = progress.getStatusText();
+                        if (!statusText.isEmpty()) {
+                            Messaging.send(player, StringUtils.wrap("  - ", ChatColor.WHITE) + statusText);
+                        }
                     } catch (QuestCancelException ex) {
                         player.sendMessage(ChatColor.GRAY + "Cancelling quest. Reason: " + ex.getReason());
                         profile.setProgress(null);

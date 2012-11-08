@@ -3,6 +3,7 @@ package mccity.plugins.questerext.types;
 import net.citizensnpcs.questers.QuestCancelException;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -21,7 +22,7 @@ public class DeathQuest implements QuestUpdater {
     @Override
     public String getStatus(ObjectiveProgress progress) throws QuestCancelException {
         if (progress.getObjective().hasParameter("status-message")) {
-            return progress.getObjective().getParameter("status-message").getString();
+            return ChatColor.GREEN + progress.getObjective().getParameter("status-message").getString();
         }
         return "";
     }

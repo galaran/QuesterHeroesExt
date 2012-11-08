@@ -83,11 +83,8 @@ public class Quest {
         this.granter.onCompletion(player, progress);
     }
 
-    public boolean sendProgressText(Player player) {
-        if (!this.progressText.isEmpty())
-            return false;
-        Messaging.send(player, progressText);
-        return true;
+    public String getCustomStatus() {
+        return progressText;
     }
 
     public static class QuestBuilder {
