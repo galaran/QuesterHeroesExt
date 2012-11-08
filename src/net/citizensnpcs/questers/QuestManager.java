@@ -1,9 +1,6 @@
 package net.citizensnpcs.questers;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import net.citizensnpcs.questers.api.events.QuestBeginEvent;
@@ -54,26 +51,43 @@ public class QuestManager {
                 return false;
             }
         }
+
+        // check requirements
+        List<Requirement> missingRequirements = new ArrayList<Requirement>();
         for (Requirement requirement : quest.getRequirements()) {
             if (!requirement.fulfilsRequirement(player)) {
-                player.sendMessage(ChatColor.GRAY + "Missing requirement. "
-                        + requirement.getRequiredText(player));
-                return false;
+                missingRequirements.add(requirement);
             }
-            if (requirement.isTake())
-                requirement.grant(player, UID);
         }
-        for (Reward reward : quest.getInitialRewards()) {
-            reward.grant(player, UID);
+        if (!missingRequirements.isEmpty()) {
+            player.sendMessage(ChatColor.RED + "Missing requirements:");
+            for (Requirement missingRequirement : missingRequirements) {
+                player.sendMessage(ChatColor.GRAY + " - " + ChatColor.RED + missingRequirement.getRequiredText(player));
+            }
+            return false;
         }
+
         QuestBeginEvent call = new QuestBeginEvent(quest, player);
         Bukkit.getPluginManager().callEvent(call);
         if (call.isCancelled()) {
             return false;
         }
+
+        // process requirements take
+        for (Requirement requirement : quest.getRequirements()) {
+            if (requirement.isTake()) {
+                requirement.grant(player, UID);
+            }
+        }
+
         getProfile(player.getName()).setProgress(
                 new QuestProgress(UID, player, questName, System.currentTimeMillis()));
         Messaging.send(player, quest.getAcceptanceText());
+
+        // grant initial rewards
+        for (Reward reward : quest.getInitialRewards()) {
+            reward.grant(player, UID);
+        }
         return true;
     }
 
