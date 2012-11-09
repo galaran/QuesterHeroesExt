@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.requirements;
+package net.citizensnpcs.questers.requirements;
 
 import com.google.common.base.Joiner;
 import com.herocraftonline.heroes.characters.Hero;

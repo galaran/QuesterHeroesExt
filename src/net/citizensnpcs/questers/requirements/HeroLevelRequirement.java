@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.requirements;
+package net.citizensnpcs.questers.requirements;
 
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;

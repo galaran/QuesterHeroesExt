@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.rewards;
+package net.citizensnpcs.questers.rewards;
 
 import com.google.common.base.Joiner;
 import com.herocraftonline.heroes.characters.Hero;

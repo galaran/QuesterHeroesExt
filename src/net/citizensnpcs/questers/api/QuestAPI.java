@@ -3,11 +3,10 @@ package net.citizensnpcs.questers.api;
 import com.google.common.collect.Maps;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
-import mccity.plugins.questerext.QuesterLogger;
-import mccity.plugins.questerext.requirements.HeroClassRequirementBuilder;
-import mccity.plugins.questerext.requirements.HeroLevelRequirementBuilder;
-import mccity.plugins.questerext.rewards.HeroExpRewardBuilder;
-import mccity.plugins.questerext.types.*;
+import net.citizensnpcs.questers.QuesterLogger;
+import net.citizensnpcs.questers.requirements.HeroClassRequirementBuilder;
+import net.citizensnpcs.questers.requirements.HeroLevelRequirementBuilder;
+import net.citizensnpcs.questers.rewards.HeroExpRewardBuilder;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.questers.quests.types.*;
 import net.citizensnpcs.questers.rewards.CommandReward.CommandRewardBuilder;
@@ -97,7 +96,7 @@ public class QuestAPI {
         }
     }
 
-    public static boolean isHeroesEnabled() {
+    public static boolean isUsingHeroes() {
         return heroes != null;
     }
 

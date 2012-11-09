@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.requirements;
+package net.citizensnpcs.questers.requirements;
 
 
 import net.citizensnpcs.properties.Storage;

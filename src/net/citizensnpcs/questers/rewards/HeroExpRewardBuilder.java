@@ -1,8 +1,6 @@
-package mccity.plugins.questerext.rewards;
+package net.citizensnpcs.questers.rewards;
 
 import net.citizensnpcs.properties.Storage;
-import net.citizensnpcs.questers.rewards.Reward;
-import net.citizensnpcs.questers.rewards.RewardBuilder;
 
 import java.util.HashMap;
 import java.util.Map;

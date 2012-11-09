@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.types;
+package net.citizensnpcs.questers.quests.types;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;

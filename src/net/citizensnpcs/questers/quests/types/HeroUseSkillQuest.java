@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.types;
+package net.citizensnpcs.questers.quests.types;
 
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.SkillCompleteEvent;

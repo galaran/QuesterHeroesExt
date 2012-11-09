@@ -1,4 +1,4 @@
-package mccity.plugins.questerext.types;
+package net.citizensnpcs.questers.quests.types;
 
 import net.citizensnpcs.questers.QuestCancelException;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;

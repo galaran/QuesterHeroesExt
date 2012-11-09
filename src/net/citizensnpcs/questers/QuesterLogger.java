@@ -1,4 +1,4 @@
-package mccity.plugins.questerext;
+package net.citizensnpcs.questers;
 
 import org.bukkit.Bukkit;
 
