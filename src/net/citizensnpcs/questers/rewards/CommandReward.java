@@ -1,6 +1,6 @@
 package net.citizensnpcs.questers.rewards;
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.ServerUtils;
 
 import org.bukkit.entity.Player;
@@ -30,15 +30,9 @@ public class CommandReward implements Reward {
 		return false;
 	}
 
-	@Override
-	public void save(Storage storage, String root) {
-		storage.setString(root + ".command", command);
-		storage.setBoolean(root + ".server", isServerCommand);
-	}
-
-	public static class CommandRewardBuilder implements RewardBuilder {
+    public static class CommandRewardBuilder implements RewardBuilder {
 		@Override
-		public Reward build(Storage storage, String root, boolean take) {
+		public Reward build(ReadOnlyStorage storage, String root, boolean take) {
 			return new CommandReward(storage.getString(root + ".command"),
 					storage.getBoolean(root + ".server"));
 		}

@@ -73,7 +73,7 @@ public class QuestManager {
             return false;
         }
 
-        // process requirements take
+        // process rewards take
         for (Requirement requirement : quest.getRequirements()) {
             if (requirement.isTake()) {
                 requirement.grant(player, UID);

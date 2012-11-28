@@ -2,7 +2,6 @@ package net.citizensnpcs.questers.requirements;
 
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
-import net.citizensnpcs.properties.Storage;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.rewards.Requirement;
 import org.bukkit.ChatColor;
@@ -72,11 +71,4 @@ public class HeroLevelRequirement implements Requirement {
         return false;
     }
 
-    @Override
-    public void save(Storage storage, String root) {
-        storage.setBoolean(root + ".max", max);
-        storage.setInt(root + ".tier", tier);
-        storage.setInt(root + ".level", level);
-        storage.setBoolean(root + ".secondary", secondary);
-    }
 }

@@ -1,7 +1,7 @@
 package net.citizensnpcs.questers.rewards;
 
 import net.citizensnpcs.permissions.PermissionManager;
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.StringUtils;
 
 import org.bukkit.ChatColor;
@@ -49,16 +49,9 @@ public class RankReward implements Requirement, Reward {
 		return take;
 	}
 
-	@Override
-	public void save(Storage storage, String root) {
-		storage.setString(root + ".rank", reward);
-		storage.setBoolean(root + ".replace", replace);
-		storage.setString(root + ".with", with);
-	}
-
-	public static class RankRewardBuilder implements RewardBuilder {
+    public static class RankRewardBuilder implements RewardBuilder {
 		@Override
-		public Reward build(Storage storage, String root, boolean take) {
+		public Reward build(ReadOnlyStorage storage, String root, boolean take) {
 			return new RankReward(storage.getString(root + ".rank"),
 					storage.getString(root + ".with"), storage.getBoolean(root
 							+ ".replace", false), take);

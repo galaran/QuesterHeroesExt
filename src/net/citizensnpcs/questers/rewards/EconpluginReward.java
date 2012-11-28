@@ -1,7 +1,7 @@
 package net.citizensnpcs.questers.rewards;
 
 import net.citizensnpcs.Economy;
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.StringUtils;
 
 import org.bukkit.ChatColor;
@@ -47,14 +47,9 @@ public class EconpluginReward implements Requirement, Reward {
 		return take;
 	}
 
-	@Override
-	public void save(Storage storage, String root) {
-		storage.setDouble(root + ".money", reward);
-	}
-
-	public static class EconpluginRewardBuilder implements RewardBuilder {
+    public static class EconpluginRewardBuilder implements RewardBuilder {
 		@Override
-		public Reward build(Storage storage, String root, boolean take) {
+		public Reward build(ReadOnlyStorage storage, String root, boolean take) {
 			return new EconpluginReward(storage.getDouble(root + ".money"),
 					take);
 		}

@@ -3,16 +3,16 @@ package net.citizensnpcs.questers.api;
 import com.google.common.collect.Maps;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
-import net.citizensnpcs.questers.QuesterLogger;
-import net.citizensnpcs.questers.requirements.HeroClassRequirementBuilder;
-import net.citizensnpcs.questers.requirements.HeroLevelRequirementBuilder;
-import net.citizensnpcs.questers.rewards.HeroExpRewardBuilder;
+import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.questers.quests.types.*;
+import net.citizensnpcs.questers.requirements.HeroClassRequirementBuilder;
+import net.citizensnpcs.questers.requirements.HeroLevelRequirementBuilder;
 import net.citizensnpcs.questers.rewards.CommandReward.CommandRewardBuilder;
 import net.citizensnpcs.questers.rewards.EconpluginReward.EconpluginRewardBuilder;
 import net.citizensnpcs.questers.rewards.ExperienceReward.ExperienceRewardBuilder;
 import net.citizensnpcs.questers.rewards.HealthReward.HealthRewardBuilder;
+import net.citizensnpcs.questers.rewards.HeroExpRewardBuilder;
 import net.citizensnpcs.questers.rewards.ItemReward.ItemRewardBuilder;
 import net.citizensnpcs.questers.rewards.NPCReward.NPCRewardBuilder;
 import net.citizensnpcs.questers.rewards.PermissionReward.PermissionRewardBuilder;
@@ -25,7 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class QuestAPI {
 
@@ -33,7 +32,6 @@ public class QuestAPI {
     private static final Map<String, RewardBuilder> rewards = Maps.newHashMap();
 
     private static final Heroes heroes;
-    private static Logger logger = null;
 
     public static void addQuestType(QuestUpdater instance, String... identifiers) {
         for (String identifier : identifiers)
@@ -89,10 +87,10 @@ public class QuestAPI {
             addRewardBuilder(new HeroClassRequirementBuilder(), "hclass", "heroclass");
             addRewardBuilder(new HeroLevelRequirementBuilder(), "hlevel", "herolevel");
             addRewardBuilder(new HeroExpRewardBuilder(), "hexp", "heroexp");
-            getLogger().info("Successfully linked with Heroes");
+            QuestUtils.getLogger().info("Successfully linked with Heroes");
         } else {
             heroes = null;
-            getLogger().severe("Heroes not found");
+            QuestUtils.getLogger().warning("Heroes not found");
         }
     }
 
@@ -102,12 +100,5 @@ public class QuestAPI {
 
     public static Hero getHeroFor(Player player) {
         return heroes.getCharacterManager().getHero(player);
-    }
-
-    public static Logger getLogger() {
-        if (logger == null) {
-            logger = new QuesterLogger();
-        }
-        return logger;
     }
 }

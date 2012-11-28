@@ -6,7 +6,7 @@ import net.citizensnpcs.commands.CommandHandler;
 import net.citizensnpcs.permissions.PermissionManager;
 import net.citizensnpcs.questers.api.events.QuestCancelEvent;
 import net.citizensnpcs.questers.data.PlayerProfile;
-import net.citizensnpcs.questers.data.QuestProperties;
+import net.citizensnpcs.questers.data.QuestStorage;
 import net.citizensnpcs.questers.quests.CompletedQuest;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 @CommandRequirements(requireSelected = true, requireOwnership = true, requiredType = "quester")
 public class QuesterCommands extends CommandHandler {
@@ -156,12 +157,15 @@ public class QuesterCommands extends CommandHandler {
                 sender.sendMessage(ChatColor.GRAY + "Profile directory is non-existent.");
                 return;
             }
-            for (File file : dir.listFiles()) {
-                if (!file.isFile())
-                    continue;
-                PlayerProfile profile = PlayerProfile.getProfile(file.getName().replace(".yml", ""), false);
-                if (profile != null)
-                    profiles.add(profile);
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (!file.isFile())
+                        continue;
+                    PlayerProfile profile = PlayerProfile.getProfile(file.getName().replace(".yml", ""), false);
+                    if (profile != null)
+                        profiles.add(profile);
+                }
             }
         } else {
             if (!new File("plugins/Citizens/profiles/" + name + ".yml").exists() && !PlayerProfile.isOnline(name)) {
@@ -231,11 +235,7 @@ public class QuesterCommands extends CommandHandler {
             max = 1)
     @CommandPermissions("quester.admin.quests.reload")
     public static void reloadQuests(CommandContext args, CommandSender sender, HumanNPC npc) {
-        Messaging.dualSend(sender, ChatColor.GRAY + "Reloading...");
-        QuestManager.clearQuests();
-        QuestProperties.initialize();
-        Messaging.dualSend(sender, ChatColor.GREEN + "Loaded " + StringUtils.wrap(QuestManager.quests().size())
-                + " quests.");
+        QuestStorage.reloadQuests(sender);
     }
 
     @Command(

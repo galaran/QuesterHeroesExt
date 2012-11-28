@@ -1,6 +1,6 @@
 package net.citizensnpcs.questers.rewards;
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,12 +15,12 @@ import java.util.Map;
 public class HeroExpRewardBuilder implements RewardBuilder {
 
     @Override
-    public Reward build(Storage storage, String root, boolean take) {
+    public Reward build(ReadOnlyStorage storage, String root, boolean take) {
         int exp = storage.getInt(root + ".exp", 1);
         boolean secondary = storage.getBoolean(root + ".secondary", false);
 
         Map<Integer, Integer> byTier = new HashMap<Integer, Integer>();
-        if (storage.keyExists(root + ".bytier")) {
+        if (storage.pathExists(root + ".bytier")) {
             String[] byTierEntries = storage.getString(root + ".bytier").trim().split(";");
             for (String entry : byTierEntries) {
                 String[] tierExp = entry.split("=");

@@ -1,6 +1,6 @@
 package net.citizensnpcs.questers.requirements;
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.questers.rewards.Reward;
 import net.citizensnpcs.questers.rewards.RewardBuilder;
 
@@ -16,9 +16,9 @@ import java.util.Set;
 public class HeroClassRequirementBuilder implements RewardBuilder {
 
     @Override
-    public Reward build(Storage storage, String root, boolean take) {
+    public Reward build(ReadOnlyStorage storage, String root, boolean take) {
         Set<String> classSet = new HashSet<String>();
-        if (storage.keyExists(root + ".classlist")) {
+        if (storage.pathExists(root + ".classlist")) {
             String[] classStrings = storage.getString(root + ".classlist").trim().split(";");
             for (String curClassString : classStrings) {
                 classSet.add(curClassString.toLowerCase());

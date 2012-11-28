@@ -1,21 +1,21 @@
 package net.citizensnpcs.questers.rewards;
 
-import net.citizensnpcs.properties.Storage;
-import net.citizensnpcs.utils.LocationUtils;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class TeleportReward implements Reward {
-	private final Location reward;
 
-	TeleportReward(Location reward) {
-		this.reward = reward;
+	private final Location location;
+
+	TeleportReward(Location location) {
+		this.location = location;
 	}
 
 	@Override
 	public void grant(Player player, int UID) {
-		player.teleport(reward);
+		player.teleport(location);
 	}
 
 	@Override
@@ -23,16 +23,10 @@ public class TeleportReward implements Reward {
 		return false;
 	}
 
-	@Override
-	public void save(Storage storage, String root) {
-		LocationUtils.saveLocation(storage, reward, root, false);
-	}
-
-	public static class TeleportRewardBuilder implements RewardBuilder {
+    public static class TeleportRewardBuilder implements RewardBuilder {
 		@Override
-		public Reward build(Storage storage, String root, boolean take) {
-			return new TeleportReward(LocationUtils.loadLocation(storage, root,
-					false));
+		public Reward build(ReadOnlyStorage storage, String root, boolean take) {
+			return new TeleportReward(storage.getLocation(root, false));
 		}
 	}
 }

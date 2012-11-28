@@ -1,9 +1,9 @@
 package net.citizensnpcs.questers.rewards;
 
 import net.citizensnpcs.Citizens;
-import net.citizensnpcs.properties.Storage;
 import net.citizensnpcs.questers.QuestManager;
 import net.citizensnpcs.questers.data.PlayerProfile;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -56,11 +56,6 @@ public class QuestReward implements Requirement, Reward {
         return take;
     }
 
-    @Override
-    public void save(Storage storage, String root) {
-        storage.setString(root + ".quest", reward);
-    }
-
     private static class AssignQuestRunnable implements Runnable {
         private final Player player;
         private final String quest;
@@ -85,7 +80,7 @@ public class QuestReward implements Requirement, Reward {
 
     public static class QuestRewardBuilder implements RewardBuilder {
         @Override
-        public Reward build(Storage storage, String root, boolean take) {
+        public Reward build(ReadOnlyStorage storage, String root, boolean take) {
             return new QuestReward(storage.getString(root + ".quest"),
                     storage.getInt(root + ".times", 1), take);
         }

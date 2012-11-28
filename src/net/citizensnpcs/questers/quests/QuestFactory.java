@@ -1,26 +1,23 @@
 package net.citizensnpcs.questers.quests;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import net.citizensnpcs.properties.ConfigurationHandler;
-import net.citizensnpcs.properties.RawYAMLObject;
-import net.citizensnpcs.questers.QuestManager;
-import net.citizensnpcs.questers.api.QuestAPI;
-import net.citizensnpcs.questers.quests.Quest.QuestBuilder;
-import net.citizensnpcs.questers.rewards.Requirement;
-import net.citizensnpcs.questers.rewards.Reward;
-import net.citizensnpcs.utils.LocationUtils;
-import net.citizensnpcs.utils.Messaging;
-import net.citizensnpcs.utils.StringUtils;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.citizensnpcs.properties.RawYAMLObject;
+import net.citizensnpcs.questers.QuestManager;
+import net.citizensnpcs.questers.api.QuestAPI;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
+import net.citizensnpcs.questers.quests.Quest.QuestBuilder;
+import net.citizensnpcs.questers.rewards.Requirement;
+import net.citizensnpcs.questers.rewards.Reward;
+import net.citizensnpcs.utils.Messaging;
+import net.citizensnpcs.utils.StringUtils;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class QuestFactory {
     private static final Function<Reward, Requirement> transformer = new Function<Reward, Requirement>() {
@@ -33,7 +30,8 @@ public class QuestFactory {
     private static final Set<String> usedKeys = Sets.newHashSet("type", "amount", "item", "npcdestination", "rewards",
             "location", "string", "optional", "finishhere", "materialid", "message");
 
-    public static void instantiateQuests(ConfigurationHandler quests) {
+    public static int loadQuestsFrom(ReadOnlyStorage quests) {
+        int beforeAmount = QuestManager.quests().size();
         questLoop: for (Object questName : quests.getKeys(null)) {
             String path = questName.toString();
             QuestBuilder quest = new QuestBuilder(questName.toString());
@@ -89,7 +87,7 @@ public class QuestFactory {
                             obj.item(new ItemStack(id, amount, data));
                         }
                         if (quests.pathExists(path + ".location")) {
-                            obj.location(LocationUtils.loadLocation(quests, path, false));
+                            obj.location(quests.getLocation(path, false));
                         }
                         obj.string(quests.getString(path + ".string"));
                         obj.optional(quests.getBoolean(path + ".optional"));
@@ -116,9 +114,10 @@ public class QuestFactory {
             quest.objectives(objectives);
             QuestManager.addQuest(quest.create());
         }
+        return QuestManager.quests().size() - beforeAmount;
     }
 
-    private static List<Reward> loadRewards(ConfigurationHandler source, String root) {
+    private static List<Reward> loadRewards(ReadOnlyStorage source, String root) {
         List<Reward> rewards = Lists.newArrayList();
         if (!source.pathExists(root) || source.getKeys(root) == null)
             return rewards;
@@ -136,58 +135,5 @@ public class QuestFactory {
                 Messaging.log("Invalid type identifier " + type + " for reward at " + path + ": reward not loaded.");
         }
         return rewards;
-    }
-
-    public static void saveQuest(ConfigurationHandler quests, Quest quest) {
-        String path = quest.getName();
-        quests.setString(path + ".texts.description", quest.getDescription());
-        quests.setString(path + ".texts.completion", quest.getGranter().getCompletionMessage());
-        quests.setString(path + ".texts.acceptance", quest.getAcceptanceText());
-        quests.setInt(path + ".repeats", quest.getRepeatLimit());
-        String temp = path + ".rewards";
-        int count = 0;
-        for (Reward reward : quest.getGranter().getRewards()) {
-            path = temp + "." + count;
-            quests.setBoolean(path + ".take", reward.isTake());
-            reward.save(quests, path);
-            ++count;
-        }
-        count = 0;
-        for (Requirement reward : quest.getRequirements()) {
-            path = temp + "." + count;
-            quests.setBoolean(path + ".take", reward.isTake());
-            reward.save(quests, path);
-            ++count;
-        }
-        count = 0;
-        path = quest.getName() + ".objectives";
-        int stepCount = 0;
-        for (QuestStep step : quest.getObjectives().steps()) {
-            for (Objective objective : step.objectives()) {
-                temp = path + "." + stepCount + "." + count;
-                quests.setString(temp + ".type", objective.getType());
-                if (objective.getAmount() != -1)
-                    quests.setInt(temp + ".amount", objective.getAmount());
-                if (objective.getDestNPCID() != -1)
-                    quests.setInt(temp + ".npcdestination", objective.getDestNPCID());
-                if (!objective.getGranter().getCompletionMessage().isEmpty())
-                    quests.setString(temp + ".message", objective.getGranter().getCompletionMessage());
-                if (objective.getItem() != null) {
-                    ItemStack item = objective.getItem();
-                    quests.setInt(temp + ".item.id", item.getTypeId());
-                    quests.setInt(temp + ".item.amount", item.getAmount());
-                    quests.setInt(temp + ".item.data", item.getDurability());
-                }
-                if (objective.getLocation() != null) {
-                    LocationUtils.saveLocation(quests, objective.getLocation(), temp, false);
-                }
-                if (objective.getMaterial() != null) {
-                    quests.setInt(temp + ".materialid", objective.getMaterial().getId());
-                }
-                ++count;
-            }
-            ++stepCount;
-        }
-        // TODO: save rewards + requirements.
     }
 }

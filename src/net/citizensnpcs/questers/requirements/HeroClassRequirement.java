@@ -1,9 +1,7 @@
 package net.citizensnpcs.questers.requirements;
 
-import com.google.common.base.Joiner;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
-import net.citizensnpcs.properties.Storage;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.rewards.Requirement;
 import org.bukkit.ChatColor;
@@ -75,10 +73,4 @@ public class HeroClassRequirement implements Requirement {
         return false;
     }
 
-    @Override
-    public void save(Storage storage, String root) {
-        storage.setString(root + ".classlist", Joiner.on(';').join(classSet));
-        storage.setBoolean(root + ".secondary", secondary);
-        storage.setBoolean(root + ".exact", exact);
-    }
 }

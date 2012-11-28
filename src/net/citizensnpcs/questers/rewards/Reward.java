@@ -8,6 +8,4 @@ public interface Reward {
 	public void grant(Player player, int UID);
 
 	public boolean isTake();
-
-	public void save(Storage storage, String root);
 }

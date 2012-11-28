@@ -1,7 +1,7 @@
 package net.citizensnpcs.questers.rewards;
 
 import net.citizensnpcs.permissions.PermissionManager;
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.StringUtils;
 
 import org.bukkit.ChatColor;
@@ -37,14 +37,9 @@ public class PermissionReward implements Requirement, Reward {
 		return take;
 	}
 
-	@Override
-	public void save(Storage storage, String root) {
-		storage.setString(root + ".permission", reward);
-	}
-
-	public static class PermissionRewardBuilder implements RewardBuilder {
+    public static class PermissionRewardBuilder implements RewardBuilder {
 		@Override
-		public Reward build(Storage storage, String root, boolean take) {
+		public Reward build(ReadOnlyStorage storage, String root, boolean take) {
 			return new PermissionReward(
 					storage.getString(root + ".permission"), take);
 		}

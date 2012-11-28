@@ -1,7 +1,7 @@
 package net.citizensnpcs.questers.requirements;
 
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.questers.rewards.Reward;
 import net.citizensnpcs.questers.rewards.RewardBuilder;
 
@@ -15,7 +15,7 @@ import net.citizensnpcs.questers.rewards.RewardBuilder;
 public class HeroLevelRequirementBuilder implements RewardBuilder {
 
     @Override
-    public Reward build(Storage storage, String root, boolean take) {
+    public Reward build(ReadOnlyStorage storage, String root, boolean take) {
         boolean max = storage.getBoolean(root + ".max", false);
         int tier = storage.getInt(root + ".tier", 1);
         int level = storage.getInt(root + ".level", 1);

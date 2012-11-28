@@ -1,16 +1,11 @@
 package net.citizensnpcs.questers.rewards;
 
-import com.google.common.base.Joiner;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
-import net.citizensnpcs.properties.Storage;
 import net.citizensnpcs.questers.api.QuestAPI;
-import net.citizensnpcs.questers.rewards.Reward;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class HeroExpReward implements Reward {
@@ -52,17 +47,4 @@ public class HeroExpReward implements Reward {
         return take;
     }
 
-    @Override
-    public void save(Storage storage, String root) {
-        storage.setInt(root + ".exp", exp);
-        storage.setBoolean(root + ".secondary", secondary);
-
-        if (!byTier.isEmpty()) {
-            List<String> byTierEntries = new ArrayList<String>();
-            for (Map.Entry<Integer, Integer> entry : byTier.entrySet()) {
-                byTierEntries.add(entry.getKey().toString() + "=" + entry.getValue().toString());
-            }
-            storage.setString(root + ".bytier", Joiner.on(';').join(byTierEntries));
-        }
-    }
 }

@@ -1,7 +1,7 @@
 package net.citizensnpcs.questers.rewards;
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 
 public interface RewardBuilder {
-	public Reward build(Storage storage, String root, boolean take);
+	public Reward build(ReadOnlyStorage storage, String root, boolean take);
 }

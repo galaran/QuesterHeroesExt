@@ -7,7 +7,7 @@ import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.event.NPCTalkEvent;
 import net.citizensnpcs.questers.QuestManager;
 import net.citizensnpcs.questers.data.PlayerProfile;
-import net.citizensnpcs.questers.data.QuestProperties;
+import net.citizensnpcs.questers.data.QuestStorage;
 import net.citizensnpcs.utils.Messaging;
 
 import org.bukkit.event.EventHandler;
@@ -17,8 +17,6 @@ public class QuesterCitizensListen implements Listener {
     @EventHandler
     public void onCitizensDisable(CitizensDisableEvent event) {
         PlayerProfile.saveAll();
-        // QuestProperties.save(); TODO: commented out until quest saving is
-        // finished.
     }
 
     @EventHandler
@@ -28,7 +26,7 @@ public class QuesterCitizensListen implements Listener {
 
     @EventHandler
     public void onCitizensReload(CitizensReloadEvent event) {
-        QuestProperties.load();
+        QuestStorage.reloadQuests(null);
     }
 
     @EventHandler

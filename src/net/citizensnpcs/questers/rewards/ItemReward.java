@@ -3,7 +3,7 @@ package net.citizensnpcs.questers.rewards;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.InventoryUtils;
 import net.citizensnpcs.utils.StringUtils;
 
@@ -73,16 +73,9 @@ public class ItemReward implements Requirement, Reward {
         return take;
     }
 
-    @Override
-    public void save(Storage storage, String root) {
-        storage.setInt(root + ".id", material.getId());
-        storage.setInt(root + ".amount", amount);
-        storage.setInt(root + ".data", durability);
-    }
-
     public static class ItemRewardBuilder implements RewardBuilder {
         @Override
-        public Reward build(Storage storage, String root, boolean take) {
+        public Reward build(ReadOnlyStorage storage, String root, boolean take) {
             int id;
             short data;
             if (storage.getString("id").contains(":")) {
@@ -93,7 +86,7 @@ public class ItemReward implements Requirement, Reward {
                 id = storage.getInt(root + ".id");
                 data = (short) storage.getInt(root + ".data");
             }
-            int amount = storage.keyExists(root + ".amount") ? storage
+            int amount = storage.pathExists(root + ".amount") ? storage
                     .getInt(root + ".amount") : 1;
             return new ItemReward(Material.getMaterial(id), amount, data, take);
         }

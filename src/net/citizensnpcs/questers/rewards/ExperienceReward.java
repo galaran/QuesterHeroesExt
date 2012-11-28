@@ -1,6 +1,6 @@
 package net.citizensnpcs.questers.rewards;
 
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.StringUtils;
 
 import org.bukkit.ChatColor;
@@ -47,12 +47,6 @@ public class ExperienceReward implements Requirement {
         return take;
     }
 
-    @Override
-    public void save(Storage storage, String root) {
-        storage.setDouble(root + ".exp", exp);
-        storage.setBoolean(root + ".total", isTotal);
-    }
-
     private static class ExperienceLevelReward implements Requirement {
         private final int level;
         private final boolean take;
@@ -82,16 +76,12 @@ public class ExperienceReward implements Requirement {
             return take;
         }
 
-        @Override
-        public void save(Storage storage, String root) {
-            storage.setInt(root + ".level", level);
-        }
     }
 
     public static class ExperienceRewardBuilder implements RewardBuilder {
         @Override
-        public Reward build(Storage storage, String root, boolean take) {
-            if (storage.keyExists(root + ".level"))
+        public Reward build(ReadOnlyStorage storage, String root, boolean take) {
+            if (storage.pathExists(root + ".level"))
                 return new ExperienceLevelReward(storage.getInt(root + ".level"), take);
             return new ExperienceReward((float) storage.getDouble(root + ".exp"), storage.getBoolean(root + ".total"),
                     take);

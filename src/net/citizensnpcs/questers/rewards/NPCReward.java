@@ -2,17 +2,14 @@ package net.citizensnpcs.questers.rewards;
 
 import net.citizensnpcs.api.event.NPCCreateEvent.NPCCreateReason;
 import net.citizensnpcs.npctypes.NPCTypeManager;
-import net.citizensnpcs.properties.Storage;
+import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.resources.npclib.NPCManager;
-import net.citizensnpcs.utils.LocationUtils;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.google.common.base.Joiner;
-
 public class NPCReward implements Reward {
+
 	private final Location at;
 	private final String name;
 	private final String[] toggles;
@@ -43,14 +40,7 @@ public class NPCReward implements Reward {
 		return false;
 	}
 
-	@Override
-	public void save(Storage storage, String root) {
-		root += ".npc";
-		storage.setString(root + ".name", name);
-		storage.setString(root + ".types", Joiner.on(",").join(toggles));
-	}
-
-	private static class NPCGiveReward implements Reward {
+    private static class NPCGiveReward implements Reward {
 		private final int UID;
 
 		private NPCGiveReward(int UID) {
@@ -67,20 +57,18 @@ public class NPCReward implements Reward {
 			return false;
 		}
 
-		@Override
-		public void save(Storage storage, String root) {
-			storage.setInt(root + ".npcid", UID);
-		}
-	}
+    }
 
 	public static class NPCRewardBuilder implements RewardBuilder {
+
 		@Override
-		public Reward build(Storage storage, String root, boolean take) {
-			if (storage.keyExists(root + ".npcid"))
-				return new NPCGiveReward(storage.getInt(root + ".npcid"));
-			return new NPCReward(storage.getString(root + ".name"), storage
-					.getString(root + ".types").split(","),
-					LocationUtils.loadLocation(storage, root, false));
+		public Reward build(ReadOnlyStorage storage, String root, boolean take) {
+			if (storage.pathExists(root + ".npcid")) {
+                return new NPCGiveReward(storage.getInt(root + ".npcid"));
+            }
+			return new NPCReward(storage.getString(root + ".name"),
+                    storage.getString(root + ".types").split(","),
+                    storage.getLocation(root, false));
 		}
 	}
 }
