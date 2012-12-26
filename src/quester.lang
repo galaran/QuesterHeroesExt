@@ -75,7 +75,7 @@ req.quest.already-complete: &7You've already completed the quest &e$1
 quest.aborted.not-exists: &7Previous in-progress quest &e$1&7 no longer exists and has been aborted
 quest.not-completed: &7This quest isn't completed yet
 quest.have-other: &7You already have a quest from another NPC
-quest.only-one: &7Only one quest can be taken on at a time
+quest.only-one: &7Only one quest can be taken on at a time!
 quest.no-available: &7No quests are available
 quest.rmb-to-accept: &aRight click again to accept
 quest.descr.header: Quest
