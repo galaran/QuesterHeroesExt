@@ -78,8 +78,10 @@ public class QuestManager {
         }
 
         getProfile(player.getName()).setProgress(new QuestProgress(UID, player, questName, System.currentTimeMillis()));
-        if (!ChatColor.stripColor(quest.getAcceptanceText()).trim().isEmpty()) {
-            Messaging.send(player, quest.getAcceptanceText());
+        
+        // acceptance test
+        if (!QuestUtils.isEmpty(quest.getAcceptanceText())) {
+            net.citizensnpcs.utils.Messaging.send(player, quest.getAcceptanceText());
         }
 
         // grant initial rewards

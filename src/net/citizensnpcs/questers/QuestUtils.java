@@ -31,6 +31,11 @@ public class QuestUtils {
     public static String formatMat(Material mat) {
         return StringUtils.capitalise(mat.name().toLowerCase().replace('_', ' '));
     }
+    
+    /** Ignore leading/trailing spaces and chat color */
+    public static boolean isEmpty(String string) {
+        return ChatColor.stripColor(string).trim().isEmpty();
+    }
 
     public static void dualSend(CommandSender sender, String message, Level level) {
         getLogger().log(level, ChatColor.stripColor(message));

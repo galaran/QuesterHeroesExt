@@ -77,7 +77,7 @@ quest.not-completed: &7Задание еще не завершено! &b/quest s
 quest.have-other: &7Вы уже выполняете задание от другого NPC. &b/quest status&7, чтобы посмотреть прогресс; &b/quest abort&7, чтобы отменить его
 quest.only-one: &6Одновременно можно выполнять только одно задание!
 quest.no-available: &7Нет доступных заданий
-quest.rmb-to-accept: &aДля того чтобы взять это задание, снова нажмите правую кнопку мыши по NPC
+quest.accept-pending: &aЧтобы взять задание &e$1&a нажмите ПКМ по &e$2
 quest.descr.header: Задание
 quest.descr.continue: &6Чтобы продолжить нажмите правую кнопку мыши
 quest.repeat.not: &6Вы не можете снова повторить это задание

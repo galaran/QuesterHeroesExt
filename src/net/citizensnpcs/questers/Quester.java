@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Quester extends CitizensNPC {
+    
     private final Map<Player, PageInstance> displays = Maps.newHashMap();
     private final Set<Player> pending = Sets.newHashSet();
     private final List<String> quests = Lists.newArrayList();
@@ -52,7 +53,7 @@ public class Quester extends CitizensNPC {
         }
     }
 
-    private void cycle(Player player) {
+    private void cycle(Player player, HumanNPC npc) {
         if (QuestManager.hasQuest(player)) {
             Messaging.send(player, "quest.only-one");
             return;
@@ -82,7 +83,7 @@ public class Quester extends CitizensNPC {
             }
             queue.put(player, base);
         }
-        updateDescription(player);
+        updateDescription(player, npc);
     }
 
     private String fetch(int index) {
@@ -122,7 +123,7 @@ public class Quester extends CitizensNPC {
 
     @Override
     public void onLeftClick(Player player, HumanNPC npc) {
-        cycle(player);
+        cycle(player, npc);
     }
 
     @Override
@@ -130,19 +131,19 @@ public class Quester extends CitizensNPC {
         if (QuestManager.hasQuest(player)) {
             checkCompletion(player, npc);
         } else {
-            if (displays.get(player) == null) {
-                cycle(player);
+            if (!displays.containsKey(player)) {
+                cycle(player, npc);
                 return;
             }
             PageInstance display = displays.get(player);
-            if (!pending.contains(player)) {
+            if (pending.contains(player)) {
+                attemptAssign(player, npc);
+            } else {
                 display.displayNext();
                 if (display.currentPage() == display.maxPages()) {
-                    Messaging.send(player, "quest.rmb-to-accept");
                     pending.add(player);
+                    sendPendingMessage(player, npc);
                 }
-            } else {
-                attemptAssign(player, npc);
             }
         }
     }
@@ -156,10 +157,10 @@ public class Quester extends CitizensNPC {
         profiles.setString(UID + ".quester.quests", Joiner.on(";").skipNulls().join(quests));
     }
 
-    private void updateDescription(Player player) {
+    private void updateDescription(Player player, HumanNPC npc) {
         Quest quest = getQuest(fetchFromList(player));
-        if (quest == null)
-            return;
+        if (quest == null) return;
+        
         PageInstance display = PageUtils.newInstance(player);
         display.setSmoothTransition(true);
         display.header(ChatColor.GREEN + StringUtils.listify(
@@ -176,9 +177,13 @@ public class Quester extends CitizensNPC {
         }
         display.process(1);
         if (display.maxPages() == 1) {
-            Messaging.send(player, "quest.rmb-to-accept");
             pending.add(player);
+            sendPendingMessage(player, npc);
         }
         displays.put(player, display);
+    }
+
+    private void sendPendingMessage(Player player, HumanNPC npc) {
+        Messaging.send(player, "quest.accept-pending", QuestManager.getDisplayName(fetchFromList(player)), npc.getName());
     }
 }

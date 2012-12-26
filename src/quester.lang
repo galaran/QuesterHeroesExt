@@ -77,7 +77,7 @@ quest.not-completed: &7This quest isn't completed yet
 quest.have-other: &7You already have a quest from another NPC
 quest.only-one: &7Only one quest can be taken on at a time!
 quest.no-available: &7No quests are available
-quest.rmb-to-accept: &aRight click again to accept
+quest.accept-pending: &aRight click &e$2&a to accept quest &e$1
 quest.descr.header: Quest
 quest.descr.continue: &6Right click to continue description
 quest.repeat.not: &7You are not allowed to repeat this quest again
