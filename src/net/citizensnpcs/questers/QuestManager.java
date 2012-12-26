@@ -57,7 +57,7 @@ public class QuestManager {
             }
         }
         if (!missingRequirements.isEmpty()) {
-            Messaging.send(player, "quest.missing-req-header");
+            Messaging.send(player, "quest.missing-req-header", QuestManager.getDisplayName(questName));
             for (Requirement missingRequirement : missingRequirements) {
                 player.sendMessage(ChatColor.GRAY + " - " + ChatColor.RED + missingRequirement.getRequiredText(player));
             }

@@ -387,7 +387,7 @@ public class QuesterCommands extends CommandHandler {
         if (!profile.hasQuest()) {
             Messaging.send(player, "cmd.no-quest");
         } else {
-            Messaging.send(player, "cmd.status", profile.getProgress().getQuestName(),
+            Messaging.send(player, "cmd.status", QuestManager.getDisplayName(profile.getProgress().getQuestName()),
                     TimeUnit.MINUTES.convert(System.currentTimeMillis() - profile.getProgress().getStartTime(), TimeUnit.MILLISECONDS)
             );
             if (profile.getProgress().isFullyCompleted()) {

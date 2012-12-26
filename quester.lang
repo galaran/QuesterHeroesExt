@@ -1,0 +1,85 @@
+# Quester-Heroes lang file
+
+utils.no-player: &cИгрок с именем &3$1&c не найден
+utils.no-player-matching: &cИгрок с именем, начинающимся на &3$1&c не найден
+utils.no-world: &cМир &6$1&c не загружен
+utils.cs-not-player: &cЭта команда недоступна из консоли
+utils.no-perm: &cУ вас нет доступа для этого действия
+
+cmd.no-such-quest: &7Квеста с таким именем не существует
+cmd.invalidpage: &7Неверный номер страницы. Всего &e$1&7 страниц
+cmd.no-quest: &cВ данный момент вы не выполняете задание
+
+cmd.abort.ok: &aКвест отменен
+cmd.assign.already-has: &7У квестера уже есть это задание
+cmd.assign.assigned: &aЗадание &e$1&a добавлено квестеру &e$2&a, теперь у него &e$4&a заданий
+cmd.add.no-profile: &cНевозможно найти оффлайн-профиль игрока
+cmd.add.already-has: &cУ игрока уже есть задание. Используйте &b-f&c, чтобы заменить его
+cmd.add.added: &aКвест добавлен
+cmd.clear.no-profile-dir: &cДиректория профилей не существует
+cmd.clear.no-player: &cНет такого игрока
+cmd.clear.cleared: &aКвесты очищены
+cmd.remove.no-quest: &7У квестера нет задания с таким именем
+cmd.remove.removed: &aЗадание &e$1&a удалено из списка квестов &e$2&a, теперь у него &e$4&a квестов
+cmd.save.wait: &7Подождите &e$1&7 секунд прежде, чем сохранять снова
+cmd.save.saved: &aПрогресс сохранен
+cmd.saveall.saved: &aСохранено &e$1&a профилей
+cmd.quests.header: Назначенные задания
+cmd.completed.none: &7Вы не выполнили еще ни одного задания
+cmd.completed.header: Выполненные задания
+cmd.completed.entry: &e$1&a - заняло &e$2&a минут. Выполнен &e$3&a раз(а)
+cmd.status: &aТекущее задание: &e$1&a. Вы уже выполняете его &e$2&a минут
+cmd.status.completed: &bЗадание выполнено! Для завершения вернитесь к NPC, который его дал
+cmd.status.header: &a-&b Текущий прогресс задания &a-
+cmd.status.cancel: &cЗадание отменено. Причина: &4$1
+cmd.lang.reloaded: &2Файл перевода перегружен
+
+progress.default-amount: &e$1&a $2 <br>&e$3&a осталось
+
+types.build-at.loc: &aПостройте блок&5$1&a в &e$2
+types.build-at: &aПостройте блок&5$1&a
+types.build: &e$1&a построено
+types.chat: &aОжидается сообщение в чат! Читайте диалоги NPC!
+types.collect: &e$1&a собрано
+types.combat: игроков побеждено
+types.delivery: &aПринести &e$3&a &5$2x $1
+types.delivery.talk: &aПоговорить с &e$1
+types.destroy-at.loc: &aРазбить блок&5$1&a в &e$2
+types.destroy-at: &aРазбить блок&5$1
+types.destroy: &e$1&a разбито
+types.distance: &aблоков пройдено
+types.hskill: раз(а) использовано умение &e$1
+types.hunt: убито
+types.hunt.any: любых существ убито
+types.location: &aНаправляйтесь к &e$1&a [радиус: &e$2&a блоков]
+
+req.hclass.class: &7Это задание требует один из следующих &eклассов&7: $1
+req.hclass.class-parent: &7Это задание требует один из следующих &eклассов&a или их предыдущие этапы&7: $1
+req.hclass.prof: &7Это задание требует одну из следующих &eпрофессий&7: $1
+req.hclass.prof-parent: &7Это задание требует одну из следующих &eпрофессий&a или их предыдущие этапы&7: $1
+req.hlevel.class.min: &7Это задание требует минимум &a$2 уровень $1 этапа &eкласса
+req.hlevel.class.max: &7Это задание требует не выше &a$2 уровень $1 этапа &eкласса
+req.hlevel.prof.min: &7Это задание требует минимум &a$2 уровень $1 этапа &eпрофессии
+req.hlevel.prof.max: &7Это задание требует не выше &a$2 уровень $1 этапа &eпрофессии
+req.money: &7Вам не хватает &e$1
+req.exp.total: &7Вам нужно минимум &e$1&7 опыта (всего)
+req.exp: &7Вам нужно минимум &e$1&7 опыта на этом уровне // (кажется, это как-то криво работает)
+req.level: &7Вы должны быть &e$1&7 уровня и выше
+req.hp: &7Вам не хватает еще &e$1&7 здоровья
+req.item: &7Вам не хватает &e$1x $2
+req.perm: &7У вас нет пермишена: &e$1
+req.rank: &7Вы должны быть в группе &e$1
+req.quest.must-complete: &7Вы должны выполнить задание &e$1&7 &a$2&7 раз(а)
+req.quest.already-complete: &7Вы уже выполнили задание &e$1
+
+quest.aborted.not-exists: &7Предыдущее выполняемое вами задание &e$1&7 больше не существует и было отменено
+quest.not-completed: &7Задание еще не завершено! &b/quest status&7, чтобы посмотреть его прогресс
+quest.have-other: &7Вы уже выполняете задание от другого NPC. &b/quest status&7, чтобы посмотреть прогресс. &b/quest abort&7, чтобы отменить его
+quest.only-one: &7Одновременно можно выполнять только одно задание
+quest.no-available: &7Нет доступных заданий
+quest.rmb-to-accept: &aДля принятия снова нажмите правую кнопку мыши
+quest.descr.header: Задание
+quest.descr.continue: &6Чтобы продолжить нажмите правую клавишу мыши
+quest.repeat.not: &7Вы не можете снова повторить это задание
+quest.repeat.wait: &7Вы сможете взять это задание снова через &e$1 часов, $2 минут
+quest.missing-req-header: &cНевозможно взять задание &a$1&c:

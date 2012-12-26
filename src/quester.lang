@@ -29,7 +29,7 @@ cmd.completed.none: &7You haven't completed any quests yet
 cmd.completed.header: Completed Quests
 cmd.completed.entry: &e$1&a - taking &e$2&a minutes. Completed &e$3&a times
 cmd.status: &aCurrently in the middle of &e$1&a. You have been on this quest for &e$2&a minutes
-cmd.status.completed: &bQuest is completed
+cmd.status.completed: &bQuest is completed! Return to giver to finish it
 cmd.status.header: &a-&b Progress report &a-
 cmd.status.cancel: &7Cancelling quest. Reason: &4$1
 cmd.lang.reloaded: &2Lang reloaded
@@ -45,7 +45,7 @@ types.combat: players defeated
 types.delivery: &aDelivering &e$1 $2&a to &e$3
 types.delivery.talk: &aTalking to &e$1
 types.destroy-at.loc: &aBreak block&5$1&a at &e$2
-types.destroy-at: &aBreak block&5$1&a
+types.destroy-at: &aBreak block&5$1
 types.destroy: &e$1&a destroyed
 types.distance: &ablocks walked
 types.hskill: times skill &e$1&a used
@@ -82,4 +82,4 @@ quest.descr.header: Quest
 quest.descr.continue: &6Right click to continue description
 quest.repeat.not: &7You are not allowed to repeat this quest again
 quest.repeat.wait: &7You must wait &e$1&7 hours and &e$2&7 minutes before attempting this quest again
-quest.missing-req-header: &cMissing requirements:
+quest.missing-req-header: &cMissing requirements for quest &a$1&c:
