@@ -1,35 +1,32 @@
 package net.citizensnpcs.questers.rewards;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.permissions.PermissionManager;
 import net.citizensnpcs.questers.data.ReadOnlyStorage;
-import net.citizensnpcs.utils.StringUtils;
-
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PermissionReward implements Requirement, Reward {
-	private final String reward;
+	private final String perm;
 	private final boolean take;
 
-	PermissionReward(String reward, boolean take) {
-		this.reward = reward;
+	PermissionReward(String perm, boolean take) {
+		this.perm = perm;
 		this.take = take;
 	}
 
 	@Override
 	public boolean fulfilsRequirement(Player player) {
-		return PermissionManager.hasPermission(player, reward);
+		return PermissionManager.hasPermission(player, perm);
 	}
 
 	@Override
 	public String getRequiredText(Player player) {
-		return ChatColor.GRAY + "You don't have the permission "
-				+ StringUtils.wrap(reward, ChatColor.GRAY) + ".";
+        return Messaging.getDecoratedTranslation("req.perm", perm);
 	}
 
 	@Override
 	public void grant(Player player, int UID) {
-		PermissionManager.givePermission(player, reward, take);
+		PermissionManager.givePermission(player, perm, take);
 	}
 
 	@Override

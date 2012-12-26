@@ -1,9 +1,7 @@
 package net.citizensnpcs.questers.rewards;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.data.ReadOnlyStorage;
-import net.citizensnpcs.utils.StringUtils;
-
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ExperienceReward implements Requirement {
@@ -24,18 +22,17 @@ public class ExperienceReward implements Requirement {
 
     @Override
     public String getRequiredText(Player player) {
-        return ChatColor.GRAY
-                + (isTotal ? "You need at least " + StringUtils.wrap(exp, ChatColor.GRAY) + " total experience points."
-                        : "You need to have  at least " + StringUtils.wrap(exp * 100, ChatColor.GRAY)
-                                + " of this experience level.");
-
+        if (isTotal) {
+            return Messaging.getDecoratedTranslation("req.exp.total", exp * 100);
+        } else {
+            return Messaging.getDecoratedTranslation("req.exp", exp);
+        }
     }
 
     @Override
     public void grant(Player player, int UID) {
         if (isTotal) {
-            player.setTotalExperience((int) (take ? player.getTotalExperience() - exp : player.getTotalExperience()
-                    + exp));
+            player.setTotalExperience((int) (take ? player.getTotalExperience() - exp : player.getTotalExperience() + exp));
         } else {
             player.setExp(take ? (player.getExp() - exp) % 1.0F : (player.getExp() + exp) % 1.0F);
         }
@@ -63,7 +60,7 @@ public class ExperienceReward implements Requirement {
 
         @Override
         public String getRequiredText(Player player) {
-            return ChatColor.GRAY + "You need to be at least level " + StringUtils.wrap(level, ChatColor.GRAY) + ".";
+            return Messaging.getDecoratedTranslation("req.level", level);
         }
 
         @Override
@@ -81,8 +78,9 @@ public class ExperienceReward implements Requirement {
     public static class ExperienceRewardBuilder implements RewardBuilder {
         @Override
         public Reward build(ReadOnlyStorage storage, String root, boolean take) {
-            if (storage.pathExists(root + ".level"))
+            if (storage.pathExists(root + ".level")) {
                 return new ExperienceLevelReward(storage.getInt(root + ".level"), take);
+            }
             return new ExperienceReward((float) storage.getDouble(root + ".exp"), storage.getBoolean(root + ".total"),
                     take);
         }

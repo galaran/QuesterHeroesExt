@@ -1,5 +1,7 @@
 package net.citizensnpcs.questers.data;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
+import me.galaran.bukkitutils.questerhex.text.TranslationBase;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.questers.QuestManager;
 import net.citizensnpcs.questers.QuestUtils;
@@ -7,23 +9,28 @@ import net.citizensnpcs.questers.quests.QuestFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
 import java.util.logging.Level;
 
-public class QuestStorage {
+public class DataLoader {
 
     private static final File compatQuestsFile = new File(Citizens.plugin.getDataFolder(), "quests.yml");
 	private static final File questsDir = new File(Citizens.plugin.getDataFolder(), "quests");
+    private static final File langFile = new File(Citizens.plugin.getDataFolder(), "quester.lang");
 
-	public static void reloadQuests(CommandSender reportRec) {
+    public static void reload(CommandSender reportRec) {
+        reloadQuests(reportRec);
+        reloadLang();
+    }
+    
+    public static void reloadQuests(CommandSender reportRec) {
         if (reportRec != null) {
             QuestUtils.dualSend(reportRec, ChatColor.GRAY + "Reloading...", Level.INFO);
         }
         QuestManager.clearQuests();
 
         if (compatQuestsFile.isFile()) {
-            reportAmount(reportRec, "Default quests.yml", loadQuestsFromFile(compatQuestsFile));
+            reportQuestFilesAmount(reportRec, "Default quests.yml", loadQuestsFromFile(compatQuestsFile));
         }
 
         if (questsDir.isDirectory()) {
@@ -35,7 +42,7 @@ public class QuestStorage {
             });
             if (questFiles != null) {
                 for (File curQuestFile : questFiles) {
-                    reportAmount(reportRec, curQuestFile.getName(), loadQuestsFromFile(curQuestFile));
+                    reportQuestFilesAmount(reportRec, curQuestFile.getName(), loadQuestsFromFile(curQuestFile));
                 }
             }
         } else {
@@ -53,10 +60,27 @@ public class QuestStorage {
         return QuestFactory.loadQuestsFrom(storage);
     }
 
-    private static void reportAmount(CommandSender reportRec, String fileName, int questAmount) {
+    private static void reportQuestFilesAmount(CommandSender reportRec, String fileName, int questAmount) {
         if (reportRec != null) {
             QuestUtils.dualSend(reportRec, ChatColor.DARK_PURPLE + fileName + ChatColor.WHITE + ": " +
                     ChatColor.GREEN + questAmount, Level.INFO);
         }
+    }
+
+    public static void reloadLang() {
+        TranslationBase lang;
+        if (langFile.isFile()) {
+            try {
+                InputStream is = new FileInputStream(langFile);
+                lang = new TranslationBase(is);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+                return;
+            }
+        } else {
+            lang = new TranslationBase("/quester.lang");
+        }
+        
+        Messaging.init(QuestUtils.getLogger(), "", lang);
     }
 }

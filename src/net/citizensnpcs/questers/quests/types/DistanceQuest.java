@@ -1,10 +1,9 @@
 package net.citizensnpcs.questers.quests.types;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
-import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -17,8 +16,7 @@ public class DistanceQuest implements QuestUpdater {
 
     @Override
     public String getStatus(ObjectiveProgress progress) {
-        return QuestUtils.defaultAmountProgress(progress,
-                StringUtils.formatter("block").wrap().plural(progress.getAmount()) + " walked");
+        return QuestUtils.defaultAmountProgress(progress, Messaging.getDecoratedTranslation("types.distance"));
     }
 
     @Override

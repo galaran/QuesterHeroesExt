@@ -6,8 +6,8 @@ import net.citizensnpcs.api.event.CitizensReloadEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.event.NPCTalkEvent;
 import net.citizensnpcs.questers.QuestManager;
+import net.citizensnpcs.questers.data.DataLoader;
 import net.citizensnpcs.questers.data.PlayerProfile;
-import net.citizensnpcs.questers.data.QuestStorage;
 import net.citizensnpcs.utils.Messaging;
 
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class QuesterCitizensListen implements Listener {
 
     @EventHandler
     public void onCitizensReload(CitizensReloadEvent event) {
-        QuestStorage.reloadQuests(null);
+        DataLoader.reload(null);
     }
 
     @EventHandler

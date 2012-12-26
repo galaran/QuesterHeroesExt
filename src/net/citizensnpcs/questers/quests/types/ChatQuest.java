@@ -2,13 +2,13 @@ package net.citizensnpcs.questers.quests.types;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.QuestCancelException;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.resources.npclib.NPCManager;
 import net.citizensnpcs.utils.LocationUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerChatEvent;
 
@@ -84,7 +84,7 @@ public class ChatQuest implements QuestUpdater {
     }
 
     public String getStatus(ObjectiveProgress progress) throws QuestCancelException {
-        return ChatColor.GREEN + "Waiting for a message!";
+        return Messaging.getDecoratedTranslation("types.chat");
     }
 
     @SuppressWarnings("unchecked")

@@ -20,12 +20,14 @@ public class Quest {
     private final Objectives objectives;
     private final String progressText;
     private final String questName;
+    private final String displayName;
     private final int repeatLimit;
     private final List<Requirement> requirements;
 
     private Quest(QuestBuilder builder) {
         this.initialRewards = builder.initalRewards;
         this.questName = builder.questName;
+        this.displayName = builder.displayName.isEmpty() ? builder.questName : builder.displayName;
         this.delay = builder.delay;
         this.description = builder.description;
         this.acceptanceText = builder.acceptanceText;
@@ -67,6 +69,10 @@ public class Quest {
         return questName;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
     public Objectives getObjectives() {
         return objectives;
     }
@@ -97,11 +103,17 @@ public class Quest {
         private Objectives objectives;
         public String progressText = "";
         private String questName = "";
+        private String displayName = "";
         private int repeatLimit = -1;
         private List<Requirement> requirements = new ArrayList<Requirement>();
 
         public QuestBuilder(String quest) {
             this.questName = quest;
+        }
+
+        public QuestBuilder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
         }
 
         public QuestBuilder abortRewards(List<Reward> rewards) {

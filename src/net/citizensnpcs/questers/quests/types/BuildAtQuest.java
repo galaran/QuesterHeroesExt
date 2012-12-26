@@ -1,11 +1,12 @@
 package net.citizensnpcs.questers.quests.types;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.QuestCancelException;
+import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.Objective;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.utils.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
@@ -45,37 +46,25 @@ public class BuildAtQuest implements QuestUpdater {
                 loc1.getBlockZ() == loc2.getBlockZ();
     }
 
-    // Build mat [data: d] at location
     @Override
     public String getStatus(ObjectiveProgress progress) throws QuestCancelException {
         Objective obj = progress.getObjective();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.GREEN);
-        sb.append("Build ");
+        StringBuilder blockSb = new StringBuilder();
         if (obj.getMaterial() != null) {
-            sb.append(ChatColor.DARK_PURPLE);
-            sb.append(obj.getMaterial().name().toLowerCase());
+            blockSb.append(' ');
+            blockSb.append(QuestUtils.formatMat(obj.getMaterial()));
             if (obj.hasParameter("data")) {
-                sb.append(' ');
-                sb.append(ChatColor.GRAY);
-                sb.append('[');
-                sb.append(ChatColor.YELLOW);
-                sb.append("data: ");
-                sb.append(obj.getParameter("data").getInt());
-                sb.append(ChatColor.GRAY);
-                sb.append(']');
+                blockSb.append(" [data: ");
+                blockSb.append(obj.getParameter("data").getInt());
+                blockSb.append(']');
             }
-            sb.append(ChatColor.GREEN);
-            sb.append(' ');
         }
-
+        
         if (obj.getLocation() != null) {
-            sb.append("at ");
-            sb.append(StringUtils.format(progress.getObjective().getLocation()));
+            return Messaging.getDecoratedTranslation("types.build-at.loc", blockSb, StringUtils.format(progress.getObjective().getLocation()));
         }
-
-        return sb.toString();
+        return Messaging.getDecoratedTranslation("types.build-at", blockSb);
     }
 
     @SuppressWarnings("unchecked")

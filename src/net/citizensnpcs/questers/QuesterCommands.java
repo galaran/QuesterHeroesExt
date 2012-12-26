@@ -1,12 +1,13 @@
 package net.citizensnpcs.questers;
 
 import com.google.common.collect.Lists;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.Settings;
 import net.citizensnpcs.commands.CommandHandler;
 import net.citizensnpcs.permissions.PermissionManager;
 import net.citizensnpcs.questers.api.events.QuestCancelEvent;
+import net.citizensnpcs.questers.data.DataLoader;
 import net.citizensnpcs.questers.data.PlayerProfile;
-import net.citizensnpcs.questers.data.QuestStorage;
 import net.citizensnpcs.questers.quests.CompletedQuest;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
@@ -14,7 +15,6 @@ import net.citizensnpcs.questers.rewards.Reward;
 import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.resources.sk89q.*;
 import net.citizensnpcs.utils.HelpUtils;
-import net.citizensnpcs.utils.Messaging;
 import net.citizensnpcs.utils.PageUtils;
 import net.citizensnpcs.utils.PageUtils.PageInstance;
 import net.citizensnpcs.utils.StringUtils;
@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 @CommandRequirements(requireSelected = true, requireOwnership = true, requiredType = "quester")
 public class QuesterCommands extends CommandHandler {
@@ -66,7 +65,7 @@ public class QuesterCommands extends CommandHandler {
     public static void abortCurrentQuest(CommandContext args, Player player, HumanNPC npc) {
         PlayerProfile profile = PlayerProfile.getProfile(player.getName());
         if (!profile.hasQuest()) {
-            player.sendMessage(ChatColor.GRAY + "You don't have a quest at the moment.");
+            Messaging.send(player, "cmd.no-quest");
         } else {
             Bukkit.getPluginManager().callEvent(
                     new QuestCancelEvent(QuestManager.getQuest(profile.getProgress().getQuestName()), player));
@@ -76,7 +75,7 @@ public class QuesterCommands extends CommandHandler {
                     reward.grant(player, profile.getProgress().getQuesterUID());
             }
             profile.setProgress(null);
-            player.sendMessage(ChatColor.GREEN + "Quest cleared.");
+            Messaging.send(player, "cmd.abort.ok");
         }
     }
 
@@ -90,18 +89,16 @@ public class QuesterCommands extends CommandHandler {
     public static void assignQuest(CommandContext args, Player player, HumanNPC npc) {
         String quest = args.getJoinedStrings(1);
         if (!QuestManager.isValidQuest(quest)) {
-            player.sendMessage(ChatColor.GRAY + "There is no quest by that name.");
+            Messaging.send(player, "cmd.no-such-quest");
             return;
         }
         Quester quester = npc.getType("quester");
         if (quester.hasQuest(quest)) {
-            player.sendMessage(ChatColor.GRAY + "The quester already has that quest.");
+            Messaging.send(player, "cmd.assign.already-has");
             return;
         }
         quester.addQuest(quest);
-        player.sendMessage(ChatColor.GREEN + "Quest " + StringUtils.wrap(quest) + " added to "
-                + StringUtils.wrap(npc.getName()) + "'s quests. " + StringUtils.wrap(npc.getName()) + " now has "
-                + StringUtils.wrap(quester.getQuests().size()) + " quests.");
+        Messaging.send(player, "cmd.assign.assigned", quest, npc.getName(), npc.getName(), quester.getQuests().size());
     }
 
     @Command(
@@ -117,24 +114,24 @@ public class QuesterCommands extends CommandHandler {
     public static void assignQuestToPlayer(CommandContext args, CommandSender sender, HumanNPC npc) {
         String quest = args.getJoinedStrings(3);
         if (!QuestManager.isValidQuest(quest)) {
-            sender.sendMessage(ChatColor.GRAY + "There is no quest by that name.");
+            Messaging.send(sender, "cmd.no-such-quest");
             return;
         }
         String name = args.getString(1);
         Player other = Bukkit.getServer().getPlayer(args.getString(1));
         if (other == null && !new File("plugins/Citizens/profiles/" + name + ".yml").exists()) {
-            sender.sendMessage(ChatColor.GRAY + "Couldn't find the offline player quest file.");
+            Messaging.send(sender, "cmd.add.no-profile");
             return;
         }
         PlayerProfile profile = PlayerProfile.getProfile(args.getString(1), false);
         if (profile.hasQuest() && !args.hasFlag('f')) {
-            sender.sendMessage(ChatColor.GRAY + "Player already has a quest. Use the -f flag to force add the quest.");
+            Messaging.send(sender, "cmd.add.already-has");
             return;
         }
         profile.setProgress(new QuestProgress(args.getInteger(2), other, quest, System.currentTimeMillis()));
         if (other == null)
             profile.save();
-        sender.sendMessage(ChatColor.GREEN + "Quest added.");
+        Messaging.send(sender, "cmd.add.added");
     }
 
     @Command(aliases = "quest", usage = "clear [player|*] [quest|*]", desc = "gives a quest to a player", modifiers = {
@@ -145,7 +142,7 @@ public class QuesterCommands extends CommandHandler {
     public static void clearQuests(CommandContext args, CommandSender sender, HumanNPC npc) {
         String quest = args.getJoinedStrings(2);
         if (!quest.equals("*") && !QuestManager.isValidQuest(quest)) {
-            sender.sendMessage(ChatColor.GRAY + "There is no quest by that name.");
+            Messaging.send(sender, "cmd.no-such-quest");
             return;
         }
 
@@ -154,7 +151,7 @@ public class QuesterCommands extends CommandHandler {
         if (name.equals("*")) {
             File dir = new File("plugins/Citizens/profiles/");
             if (!dir.exists() || !dir.isDirectory()) {
-                sender.sendMessage(ChatColor.GRAY + "Profile directory is non-existent.");
+                Messaging.send(sender, "cmd.clear.no-profile-dir");
                 return;
             }
             File[] files = dir.listFiles();
@@ -169,7 +166,7 @@ public class QuesterCommands extends CommandHandler {
             }
         } else {
             if (!new File("plugins/Citizens/profiles/" + name + ".yml").exists() && !PlayerProfile.isOnline(name)) {
-                sender.sendMessage(ChatColor.GRAY + "Couldn't find that player.");
+                Messaging.send(sender, "cmd.clear.no-player");
                 return;
             }
             profiles.add(PlayerProfile.getProfile(name, false));
@@ -193,7 +190,7 @@ public class QuesterCommands extends CommandHandler {
             if (changed && !profile.isOnline())
                 profile.save();
         }
-        sender.sendMessage(ChatColor.GREEN + "Quests cleared.");
+        Messaging.send(sender, "cmd.clear.cleared");
     }
 
     @CommandRequirements()
@@ -229,13 +226,28 @@ public class QuesterCommands extends CommandHandler {
     @Command(
             aliases = "quest",
             usage = "reload",
-            desc = "reloads quests from files",
+            desc = "reloads quests and lang from files",
             modifiers = "reload",
             min = 1,
             max = 1)
     @CommandPermissions("quester.admin.quests.reload")
-    public static void reloadQuests(CommandContext args, CommandSender sender, HumanNPC npc) {
-        QuestStorage.reloadQuests(sender);
+    public static void reload(CommandContext args, CommandSender sender, HumanNPC npc) {
+        DataLoader.reload(sender);
+    }
+
+    @CommandRequirements
+    @ServerCommand
+    @Command(
+            aliases = "quest",
+            usage = "reloadlang",
+            desc = "reloads lang file",
+            modifiers = "reloadlang",
+            min = 1,
+            max = 1)
+    @CommandPermissions("quester.admin.quests.reload")
+    public static void reloadLang(CommandContext args, CommandSender sender, HumanNPC npc) {
+        DataLoader.reloadLang();
+        Messaging.send(sender, "cmd.lang.reloaded");
     }
 
     @Command(
@@ -249,13 +261,11 @@ public class QuesterCommands extends CommandHandler {
         Quester quester = npc.getType("quester");
         String quest = args.getJoinedStrings(1);
         if (!quester.hasQuest(quest)) {
-            player.sendMessage(ChatColor.GRAY + "The quester doesn't have any quests by that name.");
+            Messaging.send(player, "cmd.remove.no-quest");
             return;
         }
         quester.removeQuest(quest);
-        player.sendMessage(ChatColor.GREEN + "Quest " + StringUtils.wrap(quest) + " removed from "
-                + StringUtils.wrap(npc.getName()) + "'s quests. " + StringUtils.wrap(npc.getName()) + " now has "
-                + StringUtils.wrap(quester.getQuests().size()) + " quests.");
+        Messaging.send(player, "cmd.remove.removed", quest, npc.getName(), npc.getName(), quester.getQuests().size());
     }
 
     @CommandRequirements()
@@ -264,15 +274,12 @@ public class QuesterCommands extends CommandHandler {
     public static void saveProfile(CommandContext args, Player player, HumanNPC npc) {
         PlayerProfile profile = PlayerProfile.getProfile(player.getName());
         if (System.currentTimeMillis() - profile.getLastSaveTime() < Settings.getInt("QuestSaveDelay")) {
-            player.sendMessage(ChatColor.GRAY
-                    + "Please wait "
-                    + TimeUnit.SECONDS.convert(Settings.getInt("QuestSaveDelay")
-                            - (System.currentTimeMillis() - profile.getLastSaveTime()), TimeUnit.MILLISECONDS)
-                    + " seconds before saving again.");
+            Messaging.send(player, "cmd.save.wait", TimeUnit.SECONDS.convert(Settings.getInt("QuestSaveDelay")
+                    - (System.currentTimeMillis() - profile.getLastSaveTime()), TimeUnit.MILLISECONDS));
             return;
         }
         profile.save();
-        player.sendMessage(ChatColor.GREEN + "Saved current progress.");
+        Messaging.send(player, "cmd.save.saved");
     }
 
     @CommandRequirements()
@@ -285,7 +292,7 @@ public class QuesterCommands extends CommandHandler {
             profile.save();
             ++count;
         }
-        sender.sendMessage(ChatColor.GREEN + "Saved " + StringUtils.wrap(count) + " profiles.");
+        Messaging.send(sender, "cmd.saveall.saved", count);
     }
 
     private static void sendQuestHelp(CommandSender sender) {
@@ -314,16 +321,16 @@ public class QuesterCommands extends CommandHandler {
             page = 1;
         PageInstance instance = PageUtils.newInstance(player);
         Quester quester = npc.getType("quester");
-        instance.header(ChatColor.GREEN
-                + StringUtils.listify("Completed Quests " + ChatColor.WHITE + "<%x/%y>" + ChatColor.GREEN));
+        instance.header(ChatColor.GREEN +
+                StringUtils.listify(Messaging.getDecoratedTranslation("cmd.quests.header") + " " +
+                ChatColor.WHITE + "<%x/%y>" + ChatColor.GREEN));
         for (String quest : quester.getQuests()) {
             if (instance.maxPages() > page)
                 break;
             instance.push(ChatColor.GREEN + "   - " + StringUtils.wrap(quest));
         }
         if (page > instance.maxPages()) {
-            player.sendMessage(ChatColor.GRAY + "Invalid page entered. There are only " + instance.maxPages()
-                    + " pages.");
+            Messaging.send(player, "cmd.invalidpage", instance.maxPages());
             return;
         }
         instance.process(page);
@@ -341,7 +348,7 @@ public class QuesterCommands extends CommandHandler {
     public static void viewCompleted(CommandContext args, Player player, HumanNPC npc) {
         PlayerProfile profile = PlayerProfile.getProfile(player.getName());
         if (profile.getAllCompleted().size() == 0) {
-            player.sendMessage(ChatColor.GRAY + "You haven't completed any quests yet.");
+            Messaging.send(player, "cmd.completed.none");
             return;
         }
         int page = args.argsLength() == 2 ? args.getInteger(1) : 1;
@@ -349,16 +356,18 @@ public class QuesterCommands extends CommandHandler {
             page = 1;
         PageInstance instance = PageUtils.newInstance(player);
         instance.header(ChatColor.GREEN
-                + StringUtils.listify("Completed Quests " + ChatColor.WHITE + "<%x/%y>" + ChatColor.GREEN));
+                + StringUtils.listify(Messaging.getDecoratedTranslation("cmd.completed.header") + " " +
+                ChatColor.WHITE + "<%x/%y>" + ChatColor.GREEN));
         for (CompletedQuest quest : profile.getAllCompleted()) {
-            if (instance.maxPages() > page)
-                break;
-            instance.push(StringUtils.wrap(quest.getName()) + " - taking " + StringUtils.wrap(quest.getMinutes())
-                    + " minutes. Completed " + StringUtils.wrap(quest.getTimesCompleted()) + " times.");
+            if (instance.maxPages() > page) break;
+            instance.push(Messaging.getDecoratedTranslation("cmd.completed.entry",
+                    QuestManager.getDisplayName(quest.getName()),
+                    quest.getMinutes(),
+                    quest.getTimesCompleted())
+            );
         }
         if (page > instance.maxPages()) {
-            player.sendMessage(ChatColor.GRAY + "Invalid page entered. There are only " + instance.maxPages()
-                    + " pages.");
+            Messaging.send(player, "cmd.invalidpage", instance.maxPages());
             return;
         }
         instance.process(page);
@@ -376,32 +385,30 @@ public class QuesterCommands extends CommandHandler {
     public static void viewCurrentQuestStatus(CommandContext args, Player player, HumanNPC npc) {
         PlayerProfile profile = PlayerProfile.getProfile(player.getName());
         if (!profile.hasQuest()) {
-            player.sendMessage(ChatColor.GRAY + "You don't have a quest at the moment.");
+            Messaging.send(player, "cmd.no-quest");
         } else {
-            player.sendMessage(ChatColor.GREEN
-                    + "Currently in the middle of "
-                    + StringUtils.wrap(profile.getProgress().getQuestName())
-                    + ". You have been on this quest for "
-                    + StringUtils.wrap(TimeUnit.MINUTES.convert(System.currentTimeMillis()
-                            - profile.getProgress().getStartTime(), TimeUnit.MILLISECONDS)) + " minutes.");
+            Messaging.send(player, "cmd.status", profile.getProgress().getQuestName(),
+                    TimeUnit.MINUTES.convert(System.currentTimeMillis() - profile.getProgress().getStartTime(), TimeUnit.MILLISECONDS)
+            );
             if (profile.getProgress().isFullyCompleted()) {
-                player.sendMessage(ChatColor.AQUA + "Quest is completed.");
+                Messaging.send(player, "cmd.status.completed");
             } else {
                 String questCustomStatus = QuestManager.getQuest(profile.getQuest()).getCustomStatus();
                 if (!questCustomStatus.isEmpty()) {
                     player.sendMessage(ChatColor.DARK_AQUA + questCustomStatus);
                 }
-                player.sendMessage(ChatColor.GREEN + "-" + ChatColor.AQUA + " Progress report " + ChatColor.GREEN + "-");
+                Messaging.sendNoPrefix(player, "cmd.status.header");
                 for (ObjectiveProgress progress : profile.getProgress().getProgress()) {
                     if (progress == null)
                         continue;
                     try {
                         String statusText = progress.getStatusText();
                         if (!statusText.isEmpty()) {
-                            Messaging.send(player, StringUtils.wrap("  - ", ChatColor.WHITE) + statusText);
+                            // We need Citizens formatting here
+                            net.citizensnpcs.utils.Messaging.send(player, StringUtils.wrap("  - ", ChatColor.WHITE) + statusText);
                         }
                     } catch (QuestCancelException ex) {
-                        player.sendMessage(ChatColor.GRAY + "Cancelling quest. Reason: " + ex.getReason());
+                        Messaging.send(player, "cmd.status.cancel", ex.getReason());
                         profile.setProgress(null);
                     }
                 }

@@ -2,12 +2,13 @@ package net.citizensnpcs.questers.requirements;
 
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
+import me.galaran.bukkitutils.questerhex.text.StringUtils;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.rewards.Requirement;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.Iterator;
 import java.util.Set;
 
 public class HeroClassRequirement implements Requirement {
@@ -42,26 +43,12 @@ public class HeroClassRequirement implements Requirement {
 
     @Override
     public String getRequiredText(Player player) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.GRAY);
-        sb.append("This quest requires one of these ");
-        sb.append(ChatColor.GREEN);
-        if (!exact) {
-            sb.append("parent ");
+        String classList = StringUtils.join(classSet, ChatColor.DARK_PURPLE, ", ", ChatColor.GRAY, null);
+        if (secondary) {
+            return Messaging.getDecoratedTranslation(exact ? "req.hclass.prof" : "req.hclass.prof-parent", classList);
+        } else {
+            return Messaging.getDecoratedTranslation(exact ? "req.hclass.class" : "req.hclass.class-parent", classList);
         }
-        sb.append(secondary ? "professions" : "classes");
-        sb.append(ChatColor.GRAY);
-        sb.append(": ");
-        Iterator<String> itr = classSet.iterator();
-        while (itr.hasNext()) {
-            sb.append(ChatColor.DARK_PURPLE);
-            sb.append(itr.next());
-            if (itr.hasNext()) {
-                sb.append(ChatColor.GRAY);
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
     }
 
     @Override
@@ -72,5 +59,4 @@ public class HeroClassRequirement implements Requirement {
     public boolean isTake() {
         return false;
     }
-
 }

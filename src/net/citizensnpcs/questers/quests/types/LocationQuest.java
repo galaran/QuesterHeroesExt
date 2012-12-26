@@ -1,37 +1,34 @@
 package net.citizensnpcs.questers.quests.types;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.collect.Maps;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.quests.Objective;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.utils.LocationUtils;
 import net.citizensnpcs.utils.StringUtils;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class LocationQuest implements QuestUpdater {
+
+    private static final Class<? extends Event>[] EVENTS = new Class[] { PlayerMoveEvent.class };
+    
     @Override
     public Class<? extends Event>[] getEventTypes() {
         return EVENTS;
     }
+    
     @Override
     public String getStatus(ObjectiveProgress progress) {
-        double amount = progress.getObjective().hasParameter("leeway") ? progress.getObjective().getParameter("leeway")
-                .getDouble() : progress.getAmount();
-        return ChatColor.GREEN
-                + "Moving to "
-                + StringUtils.format(progress.getObjective().getLocation())
-                + " "
-                + StringUtils.bracketize(StringUtils.wrap(amount) + StringUtils.formatter(" block").plural(amount)
-                        + " leeway", true);
+        Objective obj = progress.getObjective();
+        double leeway = obj.hasParameter("leeway") ? obj.getParameter("leeway").getDouble() : 0.0;
+        return Messaging.getDecoratedTranslation("types.location", StringUtils.format(obj.getLocation()), (int) leeway);
     }
 
     @Override
@@ -41,13 +38,12 @@ public class LocationQuest implements QuestUpdater {
             Objective objective = progress.getObjective();
             double leeway = objective.hasParameter("leeway") ? objective.getParameter("leeway").getDouble() : objective
                     .getAmount();
-            if (LocationUtils.withinRange(ev.getTo(), objective.getLocation(), leeway)
-                    && withinYawRange(ev.getTo(), objective)) {
-                if (!objective.hasParameter("time"))
-                    return true;
+            if (LocationUtils.withinRange(ev.getTo(), objective.getLocation(), leeway) && withinYawRange(ev.getTo(), objective)) {
+                if (!objective.hasParameter("time")) return true;
                 return updateTime(objective.getParameter("time").getInt(), progress.getPlayer());
-            } else
+            } else {
                 reachTimes.remove(progress.getPlayer());
+            }
         }
         return false;
     }
@@ -75,8 +71,6 @@ public class LocationQuest implements QuestUpdater {
         return (yaw1 + objective.getAmount() >= yaw2 && yaw2 >= yaw1 - objective.getAmount())
                 && (pitch1 + objective.getAmount() >= pitch2 && pitch2 >= pitch1 - objective.getAmount());
     }
-
-    private static final Class<? extends Event>[] EVENTS = new Class[] { PlayerMoveEvent.class };
 
     private static final Map<Player, Long> reachTimes = Maps.newHashMap();
 }

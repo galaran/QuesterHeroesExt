@@ -1,8 +1,6 @@
 package net.citizensnpcs.questers;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.api.events.QuestBeginEvent;
 import net.citizensnpcs.questers.api.events.QuestCompleteEvent;
 import net.citizensnpcs.questers.api.events.QuestIncrementEvent;
@@ -12,16 +10,17 @@ import net.citizensnpcs.questers.quests.Quest;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
 import net.citizensnpcs.questers.rewards.Requirement;
 import net.citizensnpcs.questers.rewards.Reward;
-import net.citizensnpcs.utils.Messaging;
-import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 public class QuestManager {
+    
     private static final Map<String, Quest> quests = new HashMap<String, Quest>();
 
     public static void addQuest(Quest quest) {
@@ -35,7 +34,7 @@ public class QuestManager {
         }
         Quest quest = quests.get(questName);
         if (!canRepeat(player, quest)) {
-            player.sendMessage(ChatColor.GRAY + "You are not allowed to repeat this quest again.");
+            Messaging.send(player, "quest.repeat.not");
             return false;
         }
         if (getProfile(player.getName()).hasCompleted(questName) && quest.getDelay() > 0) {
@@ -44,10 +43,8 @@ public class QuestManager {
             if (delayDifference > 0) {
                 long hours = TimeUnit.HOURS.convert(delayDifference, TimeUnit.MINUTES);
                 long minutes = delayDifference - TimeUnit.MINUTES.convert(hours, TimeUnit.HOURS);
-                player.sendMessage(ChatColor.GRAY + "You must wait "
-                        + StringUtils.wrap(hours, ChatColor.GRAY) + " hours and "
-                        + StringUtils.wrap(minutes, ChatColor.GRAY)
-                        + " minutes before attempting this quest again.");
+                
+                Messaging.send(player, "quest.repeat.wait", hours, minutes);
                 return false;
             }
         }
@@ -60,7 +57,7 @@ public class QuestManager {
             }
         }
         if (!missingRequirements.isEmpty()) {
-            player.sendMessage(ChatColor.RED + "Missing requirements:");
+            Messaging.send(player, "quest.missing-req-header");
             for (Requirement missingRequirement : missingRequirements) {
                 player.sendMessage(ChatColor.GRAY + " - " + ChatColor.RED + missingRequirement.getRequiredText(player));
             }
@@ -80,9 +77,10 @@ public class QuestManager {
             }
         }
 
-        getProfile(player.getName()).setProgress(
-                new QuestProgress(UID, player, questName, System.currentTimeMillis()));
-        Messaging.send(player, quest.getAcceptanceText());
+        getProfile(player.getName()).setProgress(new QuestProgress(UID, player, questName, System.currentTimeMillis()));
+        if (!ChatColor.stripColor(quest.getAcceptanceText()).trim().isEmpty()) {
+            Messaging.send(player, quest.getAcceptanceText());
+        }
 
         // grant initial rewards
         for (Reward reward : quest.getInitialRewards()) {
@@ -136,6 +134,17 @@ public class QuestManager {
 
     public static boolean hasQuest(Player player) {
         return getProfile(player.getName()).hasQuest();
+    }
+
+    /**
+     * @return quest display name, or questName, if no display name
+     */
+    public static String getDisplayName(String questName) {
+        Quest quest = getQuest(questName);
+        if (quest == null || quest.getDisplayName().isEmpty()) {
+            return questName;
+        }
+        return quest.getDisplayName();
     }
 
     public static void incrementQuest(Player player, Event event) {

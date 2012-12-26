@@ -5,13 +5,13 @@ import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import java.util.HashMap;
 import java.util.Map;
 
-//rewards:
-//    '0':
-//        type: hexp
-//        exp: 500
-//        bytier: "1=500;2=400;3=300"
-//        secondary: false
-//        take: false
+// rewards:
+//     '0':
+//         type: hexp
+//         exp: 500
+//         bytier: "1=500;2=400;3=300"
+//         secondary: false
+//         take: false
 public class HeroExpRewardBuilder implements RewardBuilder {
 
     @Override

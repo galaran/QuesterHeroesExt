@@ -1,10 +1,9 @@
 package net.citizensnpcs.questers.quests.types;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
-import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -16,9 +15,8 @@ public class DestroyQuest implements QuestUpdater {
 
     @Override
     public String getStatus(ObjectiveProgress progress) {
-        return QuestUtils.defaultAmountProgress(progress, StringUtils.formatter(progress.getObjective().getMaterial())
-                .wrap().plural(progress.getAmount())
-                + " destroyed");
+        return QuestUtils.defaultAmountProgress(progress,
+                Messaging.getDecoratedTranslation("types.destroy", QuestUtils.formatMat(progress.getObjective().getMaterial())));
     }
 
     @Override

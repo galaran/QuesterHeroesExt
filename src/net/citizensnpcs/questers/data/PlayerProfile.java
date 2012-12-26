@@ -1,25 +1,22 @@
 package net.citizensnpcs.questers.data;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.properties.ConfigurationHandler;
 import net.citizensnpcs.questers.QuestManager;
 import net.citizensnpcs.questers.quests.CompletedQuest;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
 import net.citizensnpcs.utils.LocationUtils;
-import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerProfile {
     private final Map<String, CompletedQuest> completedQuests = Maps.newHashMap();
@@ -102,12 +99,7 @@ public class PlayerProfile {
         String path = "quests.current", temp = path;
         questLoad: if (!profile.getString(path + ".name").isEmpty()) {
             if (QuestManager.getQuest(profile.getString(path + ".name")) == null) {
-                Bukkit.getServer()
-                        .getPlayer(name)
-                        .sendMessage(
-                                ChatColor.GRAY + "Previous in-progress quest "
-                                        + StringUtils.wrap(profile.getString(path + ".name"), ChatColor.GRAY)
-                                        + " no longer exists and has been aborted.");
+                Messaging.send(name, "quest.aborted.not-exists", profile.getString(path + ".name"));
                 profile.removeKey("quests.current");
                 break questLoad;
             }

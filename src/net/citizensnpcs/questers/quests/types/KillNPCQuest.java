@@ -31,18 +31,19 @@ public class KillNPCQuest implements QuestUpdater {
         if (event instanceof EntityDeathEvent) {
             EntityDeathEvent ev = (EntityDeathEvent) event;
             HumanNPC npc = NPCManager.get(ev.getEntity());
-            if (npc == null) {
-                CreatureNPC cNPC = CreatureTask.getCreature(ev.getEntity());
-                if (cNPC != null) {
-                    npc = cNPC.npc;
-                }
-            }
+//            if (npc == null) { // remove CraftBukkit dependency
+//                CreatureNPC cNPC = CreatureTask.getCreature(ev.getEntity());
+//                if (cNPC != null) {
+//                    npc = cNPC.npc;
+//                }
+//            }
             if (npc != null) {
                 String search = progress.getObjective().getString().toLowerCase();
                 boolean found = false, reversed = !search.isEmpty() && search.charAt(0) == '-';
                 if (search.contains("*") || search.contains(npc.getUID() + ",")
                         || search.contains(npc.getName().toLowerCase() + ",")
-                        || (search.contains("evil") && npc.getHandle() instanceof EvilCreatureNPC)) {
+                        // || (search.contains("evil") && npc.getHandle() instanceof EvilCreatureNPC) // remove CraftBukkit dependency
+                        ) {
                     found = true;
                 }
                 if (reversed ^ found) {

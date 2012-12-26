@@ -1,7 +1,9 @@
 package net.citizensnpcs.questers;
 
 public class QuestCancelException extends Exception {
+    
 	private final String reason;
+    
 	public QuestCancelException(String reason) {
 		this.reason = reason;
 	}

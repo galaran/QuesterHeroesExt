@@ -1,6 +1,6 @@
 package net.citizensnpcs.questers;
 
-import net.citizensnpcs.questers.data.QuestStorage;
+import net.citizensnpcs.questers.data.DataLoader;
 import net.citizensnpcs.questers.listeners.*;
 import net.citizensnpcs.questers.listeners.QuesterHeroesListen;
 import net.citizensnpcs.commands.CommandHandler;
@@ -35,7 +35,7 @@ public class QuesterType extends CitizensNPCType {
 
     @Override
     public void registerEvents() {
-        QuestStorage.reloadQuests(null);
+        DataLoader.reload(null);
 
         // custom events
         NPCTypeManager.registerEvents(new QuesterCitizensListen());

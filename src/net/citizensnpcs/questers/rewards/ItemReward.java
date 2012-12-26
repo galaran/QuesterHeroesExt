@@ -1,18 +1,18 @@
 package net.citizensnpcs.questers.rewards;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import me.galaran.bukkitutils.questerhex.text.Messaging;
+import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.InventoryUtils;
-import net.citizensnpcs.utils.StringUtils;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class ItemReward implements Requirement, Reward {
+    
     private final int amount;
     private final short durability;
     private final Material material;
@@ -33,13 +33,7 @@ public class ItemReward implements Requirement, Reward {
     @Override
     public String getRequiredText(Player player) {
         int remainder = InventoryUtils.getRemainder(player, material, amount);
-        return ChatColor.GRAY
-                + "You need "
-                + StringUtils.wrap(remainder, ChatColor.GRAY)
-                + " more "
-                + StringUtils
-                        .pluralise(StringUtils.format(material), remainder)
-                + ".";
+        return Messaging.getDecoratedTranslation("req.item", remainder, QuestUtils.formatMat(material));
     }
 
     @SuppressWarnings("deprecation")
@@ -53,16 +47,12 @@ public class ItemReward implements Requirement, Reward {
             int temp = this.amount, other = temp;
             Collection<ItemStack> unadded = new ArrayList<ItemStack>();
             while (temp > 0) {
-                other = temp > material.getMaxStackSize() ? material
-                        .getMaxStackSize() : temp;
-                unadded.addAll(player.getInventory()
-                        .addItem(new ItemStack(material, other, durability))
-                        .values());
+                other = temp > material.getMaxStackSize() ? material.getMaxStackSize() : temp;
+                unadded.addAll(player.getInventory().addItem(new ItemStack(material, other, durability)).values());
                 temp -= other;
             }
             for (ItemStack stack : unadded) {
-                player.getWorld()
-                        .dropItemNaturally(player.getLocation(), stack);
+                player.getWorld().dropItemNaturally(player.getLocation(), stack);
             }
             player.updateInventory();
         }

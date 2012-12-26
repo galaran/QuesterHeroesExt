@@ -2,6 +2,7 @@ package net.citizensnpcs.questers.quests.types;
 
 import java.util.Map;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.Settings;
 import net.citizensnpcs.permissions.CitizensGroup;
 import net.citizensnpcs.permissions.PermissionManager;
@@ -24,7 +25,7 @@ public class CombatQuest implements QuestUpdater {
     }
     @Override
     public String getStatus(ObjectiveProgress progress) {
-        return QuestUtils.defaultAmountProgress(progress, "players defeated");
+        return QuestUtils.defaultAmountProgress(progress, Messaging.getDecoratedTranslation("types.combat"));
     }
 
     @Override

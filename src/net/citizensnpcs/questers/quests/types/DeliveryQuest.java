@@ -1,13 +1,13 @@
 package net.citizensnpcs.questers.quests.types;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.api.CitizensManager;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.questers.QuestCancelException;
+import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.utils.InventoryUtils;
-import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,13 +24,14 @@ public class DeliveryQuest implements QuestUpdater {
         if (CitizensManager.getNPC(progress.getObjective().getDestNPCID()) == null) {
             throw new QuestCancelException(ChatColor.GRAY + "Cancelling quest due to missing destination NPC.");
         }
-        int amount = progress.getObjective().getAmount();
-        if (progress.getObjective().getMaterial() == null || progress.getObjective().getMaterial() == Material.AIR)
-            return ChatColor.GREEN + "Talking to "
-                    + StringUtils.wrap(CitizensManager.getNPC(progress.getObjective().getDestNPCID()).getName()) + ".";
-        return ChatColor.GREEN + "Delivering " + StringUtils.wrap(amount) + " "
-                + StringUtils.formatter(progress.getObjective().getMaterial()).plural(amount) + " to "
-                + StringUtils.wrap(CitizensManager.getNPC(progress.getObjective().getDestNPCID()).getName()) + ".";
+        if (progress.getObjective().getMaterial() == null || progress.getObjective().getMaterial() == Material.AIR) {
+            return Messaging.getDecoratedTranslation("types.delivery.talk",
+                    CitizensManager.getNPC(progress.getObjective().getDestNPCID()).getName());
+        }
+        return Messaging.getDecoratedTranslation("types.delivery", progress.getObjective().getAmount(),
+                QuestUtils.formatMat(progress.getObjective().getMaterial()),
+                CitizensManager.getNPC(progress.getObjective().getDestNPCID()).getName()
+        );
     }
 
     @Override

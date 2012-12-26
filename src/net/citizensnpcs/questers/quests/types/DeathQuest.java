@@ -7,9 +7,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-//type: death
-//status-message: 'Ты не можешь умереть во время выполнения этого квеста!'
-//message: 'Хаха'
+// type: death
+// status-message: 'Quest will be failed, if you die'
+// message: 'Fail'
 public class DeathQuest implements QuestUpdater {
 
     private static final Class[] EVENTS = { PlayerDeathEvent.class };

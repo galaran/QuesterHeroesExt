@@ -1,5 +1,6 @@
 package net.citizensnpcs.questers.quests.types;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
@@ -16,8 +17,8 @@ public class BuildQuest implements QuestUpdater {
 
     @Override
     public String getStatus(ObjectiveProgress progress) {
-        return QuestUtils.defaultAmountProgress(progress, StringUtils.formatter(progress.getObjective().getMaterial())
-                .plural(progress.getAmount()) + " built");
+        return QuestUtils.defaultAmountProgress(progress, 
+                Messaging.getDecoratedTranslation("types.build", QuestUtils.formatMat(progress.getObjective().getMaterial())));
     }
 
     @Override

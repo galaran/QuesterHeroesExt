@@ -2,16 +2,16 @@ package net.citizensnpcs.questers.quests.types;
 
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.SkillCompleteEvent;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
-import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 
-//type: hskill
-//name: Blink   # Регистр символов неважен
-//amount: 1   # Обязательно!
-//message: Blinked!
+// type: hskill
+// name: Blink # case-insensitive
+// amount: 1
+// message: Blinked!
 public class HeroUseSkillQuest implements QuestUpdater {
 
     private static final Class[] EVENTS = { SkillCompleteEvent.class };
@@ -35,7 +35,7 @@ public class HeroUseSkillQuest implements QuestUpdater {
     }
 
     public String getStatus(ObjectiveProgress progress) {
-        return QuestUtils.defaultAmountProgress(progress, "use skill " +
-                ChatColor.DARK_PURPLE + progress.getObjective().getParameter("name").getString());
+        return QuestUtils.defaultAmountProgress(progress, Messaging.getDecoratedTranslation("types.hskill",
+                progress.getObjective().getParameter("name").getString()));
     }
 }

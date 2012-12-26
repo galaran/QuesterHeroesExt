@@ -2,9 +2,9 @@ package net.citizensnpcs.questers.requirements;
 
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.rewards.Requirement;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class HeroLevelRequirement implements Requirement {
@@ -38,28 +38,11 @@ public class HeroLevelRequirement implements Requirement {
 
     @Override
     public String getRequiredText(Player player) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.GRAY);
-        sb.append("This quest requires ");
-        if (!max) {
-            sb.append(ChatColor.DARK_AQUA);
-            sb.append("at least ");
+        if (secondary) {
+            return Messaging.getDecoratedTranslation(max ? "req.hlevel.prof.max" : "req.hlevel.prof.min", tier, level);
+        } else {
+            return Messaging.getDecoratedTranslation(max ? "req.hlevel.class.max" : "req.hlevel.class.min", tier, level);
         }
-        sb.append(ChatColor.GREEN);
-        sb.append(secondary ? "profession" : "class");
-        sb.append(ChatColor.GRAY);
-        sb.append(" tier ");
-        sb.append(ChatColor.GOLD);
-        sb.append(tier);
-        sb.append(ChatColor.GRAY);
-        sb.append(", level ");
-        sb.append(ChatColor.GOLD);
-        sb.append(level);
-        if (max) {
-            sb.append(ChatColor.DARK_AQUA);
-            sb.append(" or lower");
-        }
-        return sb.toString();
     }
 
     @Override

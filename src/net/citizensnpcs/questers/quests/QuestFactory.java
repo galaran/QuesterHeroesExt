@@ -34,7 +34,8 @@ public class QuestFactory {
         int beforeAmount = QuestManager.quests().size();
         questLoop: for (Object questName : quests.getKeys(null)) {
             String path = questName.toString();
-            QuestBuilder quest = new QuestBuilder(questName.toString());
+            QuestBuilder quest = new QuestBuilder(path);
+            quest.displayName(quests.getString(path + ".display-name"));
             quest.description(quests.getString(path + ".texts.description"));
             quest.granter(new RewardGranter(quests.getString(path + ".texts.completion"), loadRewards(quests, path
                     + ".rewards")));

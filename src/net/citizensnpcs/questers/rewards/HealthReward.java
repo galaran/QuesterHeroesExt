@@ -1,5 +1,6 @@
 package net.citizensnpcs.questers.rewards;
 
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.data.ReadOnlyStorage;
 import net.citizensnpcs.utils.StringUtils;
 
@@ -7,31 +8,29 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class HealthReward implements Requirement, Reward {
-	private final int reward;
+	private final int hp;
 	private final boolean take;
 
-	HealthReward(int reward, boolean take) {
-		this.reward = reward;
+	HealthReward(int hp, boolean take) {
+		this.hp = hp;
 		this.take = take;
 	}
 
 	@Override
 	public boolean fulfilsRequirement(Player player) {
-		return player.getHealth() - reward > 0;
+		return player.getHealth() - hp > 0;
 	}
 
 	@Override
 	public String getRequiredText(Player player) {
-		return ChatColor.GRAY + "You need "
-				+ StringUtils.wrap(player.getHealth() - reward, ChatColor.GRAY)
-				+ " more health.";
+        return Messaging.getDecoratedTranslation("req.hp", player.getHealth() - hp);
 	}
 
 	@Override
 	public void grant(Player player, int UID) {
 		player.setHealth(Math.min(player.getMaxHealth(),
-				take ? player.getHealth() - reward : player.getHealth()
-						+ reward));
+				take ? player.getHealth() - hp : player.getHealth()
+						+ hp));
 	}
 
 	@Override

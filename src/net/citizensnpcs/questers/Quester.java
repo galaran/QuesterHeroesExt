@@ -1,9 +1,11 @@
 package net.citizensnpcs.questers;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.npctypes.CitizensNPC;
 import net.citizensnpcs.npctypes.CitizensNPCType;
 import net.citizensnpcs.properties.Storage;
@@ -13,15 +15,12 @@ import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.utils.PageUtils;
 import net.citizensnpcs.utils.PageUtils.PageInstance;
 import net.citizensnpcs.utils.StringUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Quester extends CitizensNPC {
     private final Map<Player, PageInstance> displays = Maps.newHashMap();
@@ -46,27 +45,27 @@ public class Quester extends CitizensNPC {
             if (profile.getProgress().isFullyCompleted()) {
                 QuestManager.completeQuest(player);
             } else {
-                player.sendMessage(ChatColor.GRAY + "The quest isn't completed yet.");
+                Messaging.send(player, "quest.not-completed");
             }
         } else {
-            player.sendMessage(ChatColor.GRAY + "You already have a quest from another NPC.");
+            Messaging.send(player, "quest.have-other");
         }
     }
 
     private void cycle(Player player) {
         if (QuestManager.hasQuest(player)) {
-            player.sendMessage(ChatColor.GRAY + "Only one quest can be taken on at a time.");
+            Messaging.send(player, "quest.only-one");
             return;
         }
         if (quests == null || quests.size() == 0) {
-            player.sendMessage(ChatColor.GRAY + "No quests are available.");
+            Messaging.send(player, "quest.no-available");
             return;
         }
         pending.remove(player);
         if (queue.get(player) == null || queue.get(player) + 1 >= quests.size()) {
             queue.put(player, 0);
             if (quests.size() == 1 && !QuestManager.canRepeat(player, getQuest(fetchFromList(player)))) {
-                player.sendMessage(ChatColor.GRAY + "No quests are available.");
+                Messaging.send(player, "quest.no-available");
                 return;
             }
         } else {
@@ -77,7 +76,7 @@ public class Quester extends CitizensNPC {
                     break;
                 }
                 if (base == orig) {
-                    player.sendMessage(ChatColor.GRAY + "No quests are available.");
+                    Messaging.send(player, "quest.no-available");
                     return;
                 }
             }
@@ -139,7 +138,7 @@ public class Quester extends CitizensNPC {
             if (!pending.contains(player)) {
                 display.displayNext();
                 if (display.currentPage() == display.maxPages()) {
-                    player.sendMessage(ChatColor.GREEN + "Right click again to accept.");
+                    Messaging.send(player, "quest.rmb-to-accept");
                     pending.add(player);
                 }
             } else {
@@ -163,16 +162,21 @@ public class Quester extends CitizensNPC {
             return;
         PageInstance display = PageUtils.newInstance(player);
         display.setSmoothTransition(true);
-        display.header(ChatColor.GREEN + StringUtils.listify("Quest %x/%y - " + StringUtils.wrap(quest.getName())));
+        display.header(ChatColor.GREEN + StringUtils.listify(
+                Messaging.getDecoratedTranslation("quest.descr.header") +
+                " %x/%y - " +
+                StringUtils.wrap(QuestManager.getDisplayName(quest.getName()))
+        ));
+        
         for (String push : Splitter.on("<br>").omitEmptyStrings().split(quest.getDescription())) {
             display.push(push);
             if ((display.elements() % 8 == 0 && display.maxPages() == 1) || display.elements() % 9 == 0) {
-                display.push(ChatColor.GOLD + "Right click to continue description.");
+                display.push(Messaging.getDecoratedTranslation("quest.descr.continue"));
             }
         }
         display.process(1);
         if (display.maxPages() == 1) {
-            player.sendMessage(ChatColor.GOLD + "Right click to accept.");
+            Messaging.send(player, "quest.rmb-to-accept");
             pending.add(player);
         }
         displays.put(player, display);

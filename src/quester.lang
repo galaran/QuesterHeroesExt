@@ -1,0 +1,85 @@
+# Quester-Heroes lang file
+
+utils.no-player: &cNo player with name &3$1
+utils.no-player-matching: &cNo player with name matching &3$1
+utils.no-world: &cWorld $1 not loaded
+utils.cs-not-player: &cThis command can be executed only by a player
+utils.no-perm: &cYou don't have permission
+
+cmd.no-such-quest: &7There is no quest by that name
+cmd.invalidpage: &7Invalid page entered. There are only &e$1&7 pages
+cmd.no-quest: &7You don't have a quest at the moment
+
+cmd.abort.ok: &aQuest cleared
+cmd.assign.already-has: &7The quester already has that quest
+cmd.assign.assigned: &aQuest &e$1&a added to &e$2&a's quests. &e$3&a now has &e$4&a quests
+cmd.add.no-profile: &7Couldn't find the offline player profile
+cmd.add.already-has: &7Player already has a quest. Use the -f flag to force add the quest
+cmd.add.added: &aQuest added
+cmd.clear.no-profile-dir: &7Profile directory is non-existent
+cmd.clear.no-player: &7Couldn't find that player
+cmd.clear.cleared: &aQuests cleared
+cmd.remove.no-quest: &7The quester doesn't have any quests by that name
+cmd.remove.removed: &aQuest &e$1&a removed from &e$2&a's quests. &e$3&a now has &e$4&a quests
+cmd.save.wait: &7Please wait &e$1&7 seconds before saving again
+cmd.save.saved: &aSaved current progress
+cmd.saveall.saved: &aSaved &e$1&a profiles
+cmd.quests.header: Assigned Quests
+cmd.completed.none: &7You haven't completed any quests yet
+cmd.completed.header: Completed Quests
+cmd.completed.entry: &e$1&a - taking &e$2&a minutes. Completed &e$3&a times
+cmd.status: &aCurrently in the middle of &e$1&a. You have been on this quest for &e$2&a minutes
+cmd.status.completed: &bQuest is completed
+cmd.status.header: &a-&b Progress report &a-
+cmd.status.cancel: &7Cancelling quest. Reason: &4$1
+cmd.lang.reloaded: &2Lang reloaded
+
+progress.default-amount: &e$1&a $2 <br>&e$3&a remaining
+
+types.build-at.loc: &aBuild block&5$1&a at &e$2
+types.build-at: &aBuild block&5$1&a
+types.build: &e$1&a built
+types.chat: &aWaiting for a message!
+types.collect: &e$1&a collected
+types.combat: players defeated
+types.delivery: &aDelivering &e$1 $2&a to &e$3
+types.delivery.talk: &aTalking to &e$1
+types.destroy-at.loc: &aBreak block&5$1&a at &e$2
+types.destroy-at: &aBreak block&5$1&a
+types.destroy: &e$1&a destroyed
+types.distance: &ablocks walked
+types.hskill: times skill &e$1&a used
+types.hunt: killed
+types.hunt.any: any mobs killed
+types.location: &aMoving to &e$1&a [&e$2&a blocks leeway]
+
+req.hclass.class: &7This quest requires one of these &eclasses&7: $1
+req.hclass.class-parent: &7This quest requires one of these &eor parent &eclasses&7: $1
+req.hclass.prof: &7This quest requires one of these &eprofessions&7: $1
+req.hclass.prof-parent: &7This quest requires one of these &eor parent &eprofessions&7: $1
+req.hlevel.class.min: &7This quest requires at least class &etier $1&7, &elevel $2
+req.hlevel.class.max: &7This quest requires class &etier $1&7, &elevel $2&7 or lower
+req.hlevel.prof.min: &7This quest requires at least profession &etier $1&7, &elevel $2
+req.hlevel.prof.max: &7This quest requires profession &etier $1&7, &elevel $2&7 or lower
+req.money: &7You need &e$1&7 more
+req.exp.total: &7You need at least &e$1&7 total experience points
+req.exp: &7You need to have at least &e$1&7 of this experience level
+req.level: &7You need to be at least level &e$1
+req.hp: &7You need &e$1&7 more health
+req.item: &7You need &e$1&7 more &e$2
+req.perm: &7You don't have the permission &e$1
+req.rank: &7You must be in the group &e$1
+req.quest.must-complete: &7You must have completed the quest &e$1&7 &a$2&7 times
+req.quest.already-complete: &7You've already completed the quest &e$1
+
+quest.aborted.not-exists: &7Previous in-progress quest &e$1&7 no longer exists and has been aborted
+quest.not-completed: &7This quest isn't completed yet
+quest.have-other: &7You already have a quest from another NPC
+quest.only-one: &7Only one quest can be taken on at a time
+quest.no-available: &7No quests are available
+quest.rmb-to-accept: &aRight click again to accept
+quest.descr.header: Quest
+quest.descr.continue: &6Right click to continue description
+quest.repeat.not: &7You are not allowed to repeat this quest again
+quest.repeat.wait: &7You must wait &e$1&7 hours and &e$2&7 minutes before attempting this quest again
+quest.missing-req-header: &cMissing requirements:

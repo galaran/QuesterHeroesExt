@@ -1,4 +1,4 @@
 QuesterHeroesExt
 ================
 
-Heroes support, multiple quest files and some other changes for Citizens1 Quester
+Heroes support, multiple quest files, localization, display quest names and some other changes for Citizens 1 Quester
