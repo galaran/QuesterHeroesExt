@@ -7,6 +7,7 @@ import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -37,19 +38,19 @@ public class HuntQuest implements QuestUpdater {
     public boolean update(Event event, ObjectiveProgress progress) {
         if (event instanceof EntityDeathEvent) {
             EntityDeathEvent ev = (EntityDeathEvent) event;
-            if (ev.getEntity() instanceof Player) {
-                return progress.getAmount() >= progress.getObjective().getAmount();
-            }
-            
-            String entityName = ev.getEntity().getType().getName();
-            Set<String> questEntities = getTargetTypes(progress);
-            if (questEntities.isEmpty() || questEntities.contains(entityName)) {
-                progress.addAmount(1);
+
+            Entity entity = ev.getEntity();
+            if (!(entity instanceof Player) && !entity.hasMetadata("summoned-entity")) {
+                String entityTypeName = entity.getType().getName();
+                Set<String> questEntities = getTargetTypes(progress);
+                if (questEntities.isEmpty() || questEntities.contains(entityTypeName)) {
+                    progress.addAmount(1);
+                }
             }
         }
         return progress.getAmount() >= progress.getObjective().getAmount();
     }
-    
+
     private Set<String> getTargetTypes(ObjectiveProgress progress) {
         String mobsString = progress.getObjective().getString();
         if (mobsString.isEmpty()) {
