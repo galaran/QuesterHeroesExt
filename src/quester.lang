@@ -41,17 +41,17 @@ types.build-at: &aBuild block&5$1&a
 types.build: &e$1&a built
 types.chat: &aWaiting for a message!
 types.collect: &e$1&a collected
-types.combat: players defeated
-types.delivery: &aDelivering &e$1 $2&a to &e$3
+types.combat: &aplayers defeated
+types.delivery: &aDelivering &6$1 $2&a to &e$3
 types.delivery.talk: &aTalking to &e$1
 types.destroy-at.loc: &aBreak block&5$1&a at &e$2
 types.destroy-at: &aBreak block&5$1
 types.destroy: &e$1&a destroyed
 types.distance: &ablocks walked
-types.hskill: times skill &e$1&a used
-types.hunt: killed
-types.hunt.any: any mobs killed
-types.location: &aMoving to &e$1&a [&e$2&a blocks leeway]
+types.hskill: &atimes skill &e$1&a used
+types.hunt: &akilled
+types.hunt.any: &aany mobs killed
+types.location: &eMoving to &a$1&e [&a$2&e blocks leeway]
 
 req.hclass.class: &7This quest requires one of these &eclasses&7: $1
 req.hclass.class-parent: &7This quest requires one of these &eor parent &eclasses&7: $1
