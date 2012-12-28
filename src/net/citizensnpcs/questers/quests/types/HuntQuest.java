@@ -1,5 +1,6 @@
 package net.citizensnpcs.questers.quests.types;
 
+import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import me.galaran.bukkitutils.questerhex.text.Messaging;
 import me.galaran.bukkitutils.questerhex.text.StringUtils;
@@ -8,6 +9,7 @@ import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -27,11 +29,17 @@ public class HuntQuest implements QuestUpdater {
         Set<String> entityList = getTargetTypes(progress);
         if (entityList.isEmpty()) {
             return QuestUtils.defaultAmountProgress(progress, Messaging.getDecoratedTranslation("types.hunt.any"));
-        } else {
-            String entityListString = StringUtils.join(entityList, ChatColor.DARK_PURPLE, ", ", ChatColor.GRAY, null);
-            return QuestUtils.defaultAmountProgress(progress, entityListString + ' ' +
-                    Messaging.getDecoratedTranslation("types.hunt"));
         }
+
+        String entityListString = StringUtils.join(entityList, ChatColor.DARK_PURPLE, ", ", ChatColor.GRAY,
+                new Function<String, String>() {
+                    @Override
+                    public String apply(String s) {
+                        return net.citizensnpcs.utils.StringUtils.capitalise(s);
+                    }
+                });
+
+        return QuestUtils.defaultAmountProgress(progress, entityListString + ' ' + Messaging.getDecoratedTranslation("types.hunt"));
     }
 
     @Override
@@ -41,9 +49,8 @@ public class HuntQuest implements QuestUpdater {
 
             Entity entity = ev.getEntity();
             if (!(entity instanceof Player) && !entity.hasMetadata("summoned-entity")) {
-                String entityTypeName = entity.getType().getName();
                 Set<String> questEntities = getTargetTypes(progress);
-                if (questEntities.isEmpty() || questEntities.contains(entityTypeName)) {
+                if (questEntities.isEmpty() || questEntities.contains(entity.getType().getName().toLowerCase())) {
                     progress.addAmount(1);
                 }
             }
@@ -51,15 +58,23 @@ public class HuntQuest implements QuestUpdater {
         return progress.getAmount() >= progress.getObjective().getAmount();
     }
 
+    /**
+     * @return lower case
+     */
     private Set<String> getTargetTypes(ObjectiveProgress progress) {
-        String mobsString = progress.getObjective().getString();
+        String mobsString = progress.getObjective().getString().trim();
         if (mobsString.isEmpty()) {
             return Collections.emptySet();
         }
         
         Set<String> result = new HashSet<String>();
-        for (String entityString : Splitter.on(',').omitEmptyStrings().trimResults().split(mobsString)) {
-            result.add(entityString);
+        for (String entityName : Splitter.on(',').omitEmptyStrings().trimResults().split(mobsString)) {
+            String entityNameLower = entityName.toLowerCase();
+            result.add(entityNameLower);
+            
+            if (EntityType.fromName(entityNameLower) == null) {
+                QuestUtils.getLogger().warning("Invalid entity type " + entityName + " in quest " + progress.getQuestName());
+            }
         }
         return result;
     }
