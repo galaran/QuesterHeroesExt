@@ -12,7 +12,7 @@ cmd.no-quest: &7You don't have a quest at the moment
 
 cmd.abort.ok: &aQuest cleared
 cmd.assign.already-has: &7The quester already has that quest
-cmd.assign.assigned: &aQuest &e$1&a added to &e$2&a's quests. &e$3&a now has &e$4&a quests
+cmd.assign.assigned: &aQuest &6$1&a added to &e$2&a's quests. &e$3&a now has &e$4&a quests
 cmd.add.no-profile: &7Couldn't find the offline player profile
 cmd.add.already-has: &7Player already has a quest. Use the -f flag to force add the quest
 cmd.add.added: &aQuest added
@@ -20,15 +20,15 @@ cmd.clear.no-profile-dir: &7Profile directory is non-existent
 cmd.clear.no-player: &7Couldn't find that player
 cmd.clear.cleared: &aQuests cleared
 cmd.remove.no-quest: &7The quester doesn't have any quests by that name
-cmd.remove.removed: &aQuest &e$1&a removed from &e$2&a's quests. &e$3&a now has &e$4&a quests
+cmd.remove.removed: &aQuest &6$1&a removed from &e$2&a's quests. &e$3&a now has &e$4&a quests
 cmd.save.wait: &7Please wait &e$1&7 seconds before saving again
 cmd.save.saved: &aSaved current progress
 cmd.saveall.saved: &aSaved &e$1&a profiles
 cmd.quests.header: Assigned Quests
 cmd.completed.none: &7You haven't completed any quests yet
 cmd.completed.header: Completed Quests
-cmd.completed.entry: &e$1&a - taking &e$2&a minutes. Completed &e$3&a times
-cmd.status: &aCurrently in the middle of &e$1&a. You have been on this quest for &e$2&a minutes
+cmd.completed.entry: &6$1&a - taking &e$2&a minutes. Completed &e$3&a times
+cmd.status: &aCurrently in the middle of &6$1&a. You have been on this quest for &e$2&a minutes
 cmd.status.completed: &bQuest is completed! Return to giver to finish it
 cmd.status.header: &a-&b Progress report &a-
 cmd.status.cancel: &7Cancelling quest. Reason: &4$1
@@ -69,17 +69,17 @@ req.hp: &7You need &e$1&7 more health
 req.item: &7You need &e$1&7 more &e$2
 req.perm: &7You don't have the permission &e$1
 req.rank: &7You must be in the group &e$1
-req.quest.must-complete: &7You must have completed the quest &e$1&7 &a$2&7 times
-req.quest.already-complete: &7You've already completed the quest &e$1
+req.quest.must-complete: &7You must have completed the quest &6$1 &a$2&7 times
+req.quest.already-complete: &7You've already completed the quest &6$1
 
-quest.aborted.not-exists: &7Previous in-progress quest &e$1&7 no longer exists and has been aborted
+quest.aborted.not-exists: &7Previous in-progress quest &6$1&7 no longer exists and has been aborted
 quest.not-completed: &7This quest isn't completed yet
 quest.have-other: &7You already have a quest from another NPC
 quest.only-one: &7Only one quest can be taken on at a time!
 quest.no-available: &7No quests are available
-quest.accept-pending: &aRight click &e$2&a to accept quest &e$1
+quest.accept-pending: &aRight click &e$2&a to accept quest &6$1
 quest.descr.header: Quest
 quest.descr.continue: &6Right click to continue description
 quest.repeat.not: &7You are not allowed to repeat this quest again
 quest.repeat.wait: &7You must wait &e$1&7 hours and &e$2&7 minutes before attempting this quest again
-quest.missing-req-header: &cMissing requirements for quest &a$1&c:
+quest.missing-req-header: &cMissing requirements for quest &6$1&c:
