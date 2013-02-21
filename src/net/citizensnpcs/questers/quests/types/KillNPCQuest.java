@@ -6,9 +6,6 @@ import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.resources.npclib.NPCManager;
-import net.citizensnpcs.resources.npclib.creatures.CreatureNPC;
-import net.citizensnpcs.resources.npclib.creatures.CreatureTask;
-import net.citizensnpcs.resources.npclib.creatures.EvilCreatureNPC;
 import net.citizensnpcs.utils.StringUtils;
 
 import org.bukkit.event.Event;

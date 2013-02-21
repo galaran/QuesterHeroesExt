@@ -5,16 +5,16 @@ import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /*
- * type: death
- * status-message: 'Quest will be failed, if you die'
+ * type: quit
+ * status-message: 'Quest will be failed, if you quit'
  */
-public class DeathQuest implements QuestUpdater {
+public class QuitQuest implements QuestUpdater {
 
-    private static final Class[] EVENTS = { PlayerDeathEvent.class };
-
+    private static final Class[] EVENTS = new Class[] { PlayerQuitEvent.class };
+    
     @SuppressWarnings("unchecked")
     @Override
     public Class<? extends Event>[] getEventTypes() {
@@ -29,7 +29,7 @@ public class DeathQuest implements QuestUpdater {
     @Override
     public String getStatus(ObjectiveProgress progress) throws QuestCancelException {
         if (progress.getObjective().hasParameter("status-message")) {
-            return ChatColor.GREEN + progress.getObjective().getParameter("status-message").getString();
+            return ChatColor.DARK_RED + progress.getObjective().getParameter("status-message").getString();
         }
         return "";
     }

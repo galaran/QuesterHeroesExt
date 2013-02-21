@@ -45,9 +45,8 @@ public class HuntQuest implements QuestUpdater {
     @Override
     public boolean update(Event event, ObjectiveProgress progress) {
         if (event instanceof EntityDeathEvent) {
-            EntityDeathEvent ev = (EntityDeathEvent) event;
-
-            Entity entity = ev.getEntity();
+            Entity entity = ((EntityDeathEvent) event).getEntity();
+            
             if (!(entity instanceof Player) && !entity.hasMetadata("summoned-entity")) {
                 Set<String> questEntities = getTargetTypes(progress);
                 if (questEntities.isEmpty() || questEntities.contains(entity.getType().getName().toLowerCase())) {

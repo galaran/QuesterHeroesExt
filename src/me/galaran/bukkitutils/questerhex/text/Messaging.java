@@ -10,18 +10,12 @@ import org.bukkit.entity.Player;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
-utils.no-player: &cNo player with name &3$1
-utils.no-player-matching: &cNo player with name matching &3$1
-utils.no-world: &cWorld $1 not loaded
-utils.cs-not-player: &cThis command can be executed only by a player
-utils.no-perm: &cYou don't have permission
-*/
-
 public class Messaging {
 
     private static Logger log;
     private static String chatPrefix;
+    
+    private static boolean debug = false;
 
     public static interface Translation {
         String getString(String key);
@@ -33,6 +27,14 @@ public class Messaging {
         chatPrefix = chatPrefixx + ChatColor.WHITE;
         translation = tr;
     }
+    
+    public static void setDebug(boolean newDebug) {
+        debug = newDebug;
+    }
+
+    public static boolean isDebug() {
+        return debug;
+    }
 
     public static void log(String message, Object... params) {
         log(Level.INFO, message, params);
@@ -41,6 +43,18 @@ public class Messaging {
     public static void log(Level level, String message, Object... params) {
         String parameterized = StringUtils.parameterizeString(message, params);
         log.log(level, ChatColor.stripColor(parameterized));
+    }
+
+    public static void debug(String message, Object... params) {
+        if (debug) {
+            log(Level.FINER, message, params);
+        }
+    }
+
+    public static void debug(Level level, String message, Object... params) {
+        if (debug) {
+            log(level, message, params);
+        }
     }
 
     public static void send(CommandSender sender, String key, Object... params) {

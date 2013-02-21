@@ -24,8 +24,9 @@ public class QuesterPlayerListen implements Listener {
         QuestManager.incrementQuest(event.getPlayer(), event);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
+        QuestManager.incrementQuest(event.getPlayer(), event);
         QuestManager.unload(event.getPlayer());
     }
 

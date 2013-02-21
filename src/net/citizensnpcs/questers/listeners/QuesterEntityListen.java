@@ -12,16 +12,16 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 public class QuesterEntityListen implements Listener {
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent ev) {
-        if (!(ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
-            return;
+        if (!(ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
+        
         EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause();
         if (event.getDamager() instanceof Projectile) {
             Projectile shot = ((Projectile) event.getDamager());
             if (shot.getShooter() instanceof Player) {
-                event = new EntityDamageByEntityEvent(shot.getShooter(), event.getEntity(), event.getCause(),
-                        event.getDamage());
+                event = new EntityDamageByEntityEvent(shot.getShooter(), event.getEntity(), event.getCause(), event.getDamage());
             }
         }
         if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {

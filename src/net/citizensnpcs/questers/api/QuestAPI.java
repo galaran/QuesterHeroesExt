@@ -77,6 +77,7 @@ public class QuestAPI {
         // ------------------------
 
         addQuestType(new DeathQuest(), "death");
+        addQuestType(new QuitQuest(), "quit");
         addQuestType(new BuildAtQuest(), "build at", "build block at");
         addQuestType(new DestroyAtQuest(), "destroy at", "destroy block at");
 
@@ -90,7 +91,7 @@ public class QuestAPI {
             QuestUtils.getLogger().info("Successfully linked with Heroes");
         } else {
             heroes = null;
-            QuestUtils.getLogger().warning("Heroes not found");
+            QuestUtils.getLogger().warning("Heroes not loaded");
         }
     }
 

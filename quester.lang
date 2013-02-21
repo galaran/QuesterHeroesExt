@@ -1,4 +1,4 @@
-# Quester-Heroes lang file
+# Quester-Heroes lang file: ru
 
 utils.no-player: &cИгрок с именем &3$1&c не найден
 utils.no-player-matching: &cИгрок с именем, начинающимся на &3$1&c не найден

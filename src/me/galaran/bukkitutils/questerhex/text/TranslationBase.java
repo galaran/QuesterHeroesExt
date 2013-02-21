@@ -29,8 +29,8 @@ public class TranslationBase implements Messaging.Translation {
         return result;
     }
 
-    protected String missingKey(String key) {
-        String result = ChatColor.RED + "Missing translation for key " + ChatColor.DARK_RED + key;
+    private String missingKey(String key) {
+        String result = ChatColor.RED + "Missing translation for key " + ChatColor.GOLD + key;
         System.out.println(result);
         return result;
     }
