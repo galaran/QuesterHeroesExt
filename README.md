@@ -135,8 +135,6 @@ Heroes
 Другое
 ------
 
-Если при смерти игрока / моба его `lastDamageCause` равен `null`, смерть не засчитывается в квесты
-
 Мобы, помеченные `summoned-entity` через `entity.setMetadata()` не засчитываются в квест hunt
 
 Названия мобов в hunt quest должны быть, как [здесь](https://github.com/Bukkit/Bukkit/blob/master/src/main/java/org/bukkit/entity/EntityType.java) (то, что красным в "", не считая регистр символов):    

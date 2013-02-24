@@ -19,6 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class HuntQuest implements QuestUpdater {
+
+    private static final Class[] EVENTS = new Class[] { EntityDeathEvent.class };
+    
+    @SuppressWarnings("unchecked")
     @Override
     public Class<? extends Event>[] getEventTypes() {
         return EVENTS;
@@ -49,6 +53,7 @@ public class HuntQuest implements QuestUpdater {
             
             if (!(entity instanceof Player) && !entity.hasMetadata("summoned-entity")) {
                 Set<String> questEntities = getTargetTypes(progress);
+                // empty set -> any type
                 if (questEntities.isEmpty() || questEntities.contains(entity.getType().getName().toLowerCase())) {
                     progress.addAmount(1);
                 }
@@ -58,7 +63,7 @@ public class HuntQuest implements QuestUpdater {
     }
 
     /**
-     * @return lower case
+     * @return lower case entity set
      */
     private Set<String> getTargetTypes(ObjectiveProgress progress) {
         String mobsString = progress.getObjective().getString().trim();
@@ -77,6 +82,4 @@ public class HuntQuest implements QuestUpdater {
         }
         return result;
     }
-
-    private static final Class<? extends Event>[] EVENTS = new Class[] { EntityDeathEvent.class };
 }

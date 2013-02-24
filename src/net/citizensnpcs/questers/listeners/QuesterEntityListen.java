@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 public class QuesterEntityListen implements Listener {
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDeath(EntityDeathEvent ev) {
         if (!(ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
         
