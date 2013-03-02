@@ -3,17 +3,24 @@ package net.citizensnpcs.questers.quests.progress;
 import net.citizensnpcs.questers.QuestCancelException;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.quests.Objective;
-
+import net.citizensnpcs.questers.quests.RewardGranter;
+import net.citizensnpcs.questers.rewards.Requirement;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class ObjectiveProgress {
+    
     private int amountCompleted = 0;
+    
+    // unused ?
     private ItemStack lastItem;
     private Location lastLocation;
+    
     private final Objective objective;
     private final Player player;
     private final String questName;
@@ -28,11 +35,11 @@ public class ObjectiveProgress {
         this.questUpdater = QuestAPI.getObjective(objective.getType());
     }
 
-    public void addAmount(int i) {
-        if (this.getObjective().getAmount() - this.getAmount() > 0)
-            this.setAmountCompleted(this.getAmount() + 1);
-        else
-            this.amountCompleted = this.objective.getAmount();
+    public void addAmount(int add) {
+        setAmountCompleted(getAmount() + add);
+        if (getAmount() > getObjective().getAmount()) {
+            amountCompleted = objective.getAmount();
+        }
     }
 
     public int getAmount() {
@@ -88,9 +95,21 @@ public class ObjectiveProgress {
         this.lastLocation = lastLocation;
     }
 
-    public boolean update(Event event) {
-        if (getPlayer() == null)
-            return false;
-        return getQuestUpdater().update(event, this);
+    public boolean update(Player player, Event event) {
+        if (getPlayer() == null) return false;
+        
+        int oldAmountCompleted = amountCompleted;
+        boolean isComplete = getQuestUpdater().update(event, this);
+        
+        if (isComplete || amountCompleted > oldAmountCompleted) {
+            List<Requirement> missing = RewardGranter.checkRequirements(player, objective.getRequirements()); 
+            if (missing != null) {
+                RewardGranter.printRequirements(player, missing, questName);
+                isComplete = false;
+                amountCompleted = oldAmountCompleted;
+            }
+        }
+        
+        return isComplete;
     }
 }

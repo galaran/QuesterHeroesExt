@@ -6,13 +6,12 @@ import com.herocraftonline.heroes.characters.Hero;
 import net.citizensnpcs.questers.QuestUtils;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.questers.quests.types.*;
-import net.citizensnpcs.questers.requirements.HeroClassRequirementBuilder;
-import net.citizensnpcs.questers.requirements.HeroLevelRequirementBuilder;
+import net.citizensnpcs.questers.rewards.ClearEffectsReward.ClearEffectsRewardBuilder;
 import net.citizensnpcs.questers.rewards.CommandReward.CommandRewardBuilder;
 import net.citizensnpcs.questers.rewards.EconpluginReward.EconpluginRewardBuilder;
 import net.citizensnpcs.questers.rewards.ExperienceReward.ExperienceRewardBuilder;
 import net.citizensnpcs.questers.rewards.HealthReward.HealthRewardBuilder;
-import net.citizensnpcs.questers.rewards.HeroExpRewardBuilder;
+import net.citizensnpcs.questers.rewards.HeroExpReward;
 import net.citizensnpcs.questers.rewards.ItemReward.ItemRewardBuilder;
 import net.citizensnpcs.questers.rewards.NPCReward.NPCRewardBuilder;
 import net.citizensnpcs.questers.rewards.PermissionReward.PermissionRewardBuilder;
@@ -26,12 +25,17 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 
+import static net.citizensnpcs.questers.requirements.HeroClassRequirement.HeroClassRequirementBuilder;
+import static net.citizensnpcs.questers.requirements.HeroLevelRequirement.HeroLevelRequirementBuilder;
+import static net.citizensnpcs.questers.requirements.OnlinePlayerHasQuestRequirement.*;
+import static net.citizensnpcs.questers.requirements.PlayersOnlineRequirement.PlayersOnlineRequirementBuilder;
+
 public class QuestAPI {
 
     private static final Map<String, QuestUpdater> questTypes = Maps.newHashMap();
     private static final Map<String, RewardBuilder> rewards = Maps.newHashMap();
 
-    private static final Heroes heroes;
+    private static final Plugin heroes;
 
     public static void addQuestType(QuestUpdater instance, String... identifiers) {
         for (String identifier : identifiers)
@@ -80,17 +84,20 @@ public class QuestAPI {
         addQuestType(new QuitQuest(), "quit");
         addQuestType(new BuildAtQuest(), "build at", "build block at");
         addQuestType(new DestroyAtQuest(), "destroy at", "destroy block at");
+        
+        addRewardBuilder(new PlayersOnlineRequirementBuilder(), "players online");
+        addRewardBuilder(new OnlinePlayerHasQuestRequirementBuilder(), "online player has quest");
+        addRewardBuilder(new ClearEffectsRewardBuilder(), "clear effects");
 
-        Plugin heroesPlugin = Bukkit.getPluginManager().getPlugin("Heroes");
-        if (heroesPlugin != null) {
-            heroes = (Heroes) heroesPlugin;
+        heroes = Bukkit.getPluginManager().getPlugin("Heroes");
+        if (heroes != null) {
             addQuestType(new HeroUseSkillQuest(), "hskill", "heroskill", "use skill", "skill");
             addRewardBuilder(new HeroClassRequirementBuilder(), "hclass", "heroclass");
             addRewardBuilder(new HeroLevelRequirementBuilder(), "hlevel", "herolevel");
-            addRewardBuilder(new HeroExpRewardBuilder(), "hexp", "heroexp");
+            addRewardBuilder(new HeroExpReward.HeroExpRewardBuilder(), "hexp", "heroexp");
+            
             QuestUtils.getLogger().info("Successfully linked with Heroes");
         } else {
-            heroes = null;
             QuestUtils.getLogger().warning("Heroes not loaded");
         }
     }
@@ -100,6 +107,6 @@ public class QuestAPI {
     }
 
     public static Hero getHeroFor(Player player) {
-        return heroes.getCharacterManager().getHero(player);
+        return ((Heroes) heroes).getCharacterManager().getHero(player);
     }
 }

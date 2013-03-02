@@ -41,4 +41,9 @@ public interface ReadOnlyStorage {
     boolean pathExists(String path);
 
     boolean pathExists(int path);
+
+    /**
+     * @return string list or empty list if path not exists
+     */
+    List<String> getStringList(String path);
 }

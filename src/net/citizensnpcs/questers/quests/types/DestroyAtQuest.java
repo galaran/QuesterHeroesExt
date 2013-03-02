@@ -12,13 +12,13 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
-//materialid: 98
-//data: 1
-//location:
-//    x: 804
-//    y: 64
-//    z: -504
-//    world: GalaranDev
+// materialid: 98
+// data: 1
+// location:
+//     x: 804
+//     y: 64
+//     z: -504
+//     world: GalaranDev
 public class DestroyAtQuest implements QuestUpdater {
 
     private static final Class[] EVENTS = { BlockBreakEvent.class };

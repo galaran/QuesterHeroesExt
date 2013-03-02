@@ -159,12 +159,13 @@ public class ReadOnlyYamlStorage implements ReadOnlyStorage {
     }
 
     @Override
-    public void load() {
-        try {
-            config.load(file);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public List<String> getStringList(String path) {
+        return config.getStringList(path);
+    }
+
+    @Override
+    public boolean pathExists(String path) {
+        return config.get(path) != null;
     }
 
     @Override
@@ -173,7 +174,11 @@ public class ReadOnlyYamlStorage implements ReadOnlyStorage {
     }
 
     @Override
-    public boolean pathExists(String path) {
-        return config.get(path) != null;
+    public void load() {
+        try {
+            config.load(file);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

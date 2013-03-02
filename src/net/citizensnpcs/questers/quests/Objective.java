@@ -1,17 +1,17 @@
 package net.citizensnpcs.questers.quests;
 
-import java.util.Map;
-
+import com.google.common.collect.Maps;
 import net.citizensnpcs.properties.RawYAMLObject;
 import net.citizensnpcs.questers.QuestManager;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
-
+import net.citizensnpcs.questers.rewards.Requirement;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents what is necessary to complete a quest objective. In order to
@@ -31,6 +31,7 @@ public class Objective {
     private final boolean completeHere;
     private final int destination;
     private final RewardGranter granter;
+    private List<Requirement> requirements;
     private final ItemStack item;
     private final Location location;
     private final Material material;
@@ -49,6 +50,7 @@ public class Objective {
         this.material = builder.material;
         this.location = builder.location;
         this.granter = builder.granter;
+        this.requirements = builder.requirements;
         this.optional = builder.optional;
         this.completeHere = builder.completeHere;
         this.parameters = builder.params;
@@ -65,6 +67,10 @@ public class Objective {
 
     public RewardGranter getGranter() {
         return this.granter;
+    }
+
+    public List<Requirement> getRequirements() {
+        return requirements;
     }
 
     public ItemStack getItem() {
@@ -115,6 +121,7 @@ public class Objective {
 
         private int destination = -1;
         private RewardGranter granter;
+        private List<Requirement> requirements;
         private ItemStack item = null;
         private Location location = null;
         private Material material = null;
@@ -149,6 +156,11 @@ public class Objective {
 
         public Builder granter(RewardGranter granter) {
             this.granter = granter;
+            return this;
+        }
+
+        public Builder requirements(List<Requirement> requirements) {
+            this.requirements = requirements;
             return this;
         }
 

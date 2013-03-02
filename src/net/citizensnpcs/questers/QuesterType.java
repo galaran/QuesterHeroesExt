@@ -1,6 +1,7 @@
 package net.citizensnpcs.questers;
 
 import net.citizensnpcs.questers.data.DataLoader;
+import net.citizensnpcs.questers.data.PlayerProfile;
 import net.citizensnpcs.questers.listeners.*;
 import net.citizensnpcs.questers.listeners.QuesterHeroesListen;
 import net.citizensnpcs.commands.CommandHandler;
@@ -10,6 +11,7 @@ import net.citizensnpcs.npctypes.NPCTypeManager;
 import net.citizensnpcs.properties.Properties;
 import net.citizensnpcs.questers.api.QuestAPI;
 import net.citizensnpcs.questers.data.QuesterProperties;
+import org.bukkit.Bukkit;
 
 public class QuesterType extends CitizensNPCType {
 
@@ -35,8 +37,8 @@ public class QuesterType extends CitizensNPCType {
 
     @Override
     public void registerEvents() {
-        DataLoader.reload(null);
-
+        DataLoader.reload(Bukkit.getConsoleSender());
+        
         // custom events
         NPCTypeManager.registerEvents(new QuesterCitizensListen());
         NPCTypeManager.registerEvents(new QuesterEntityListen());
@@ -51,5 +53,17 @@ public class QuesterType extends CitizensNPCType {
         if (QuestAPI.isUsingHeroes()) {
             NPCTypeManager.registerEvents(new QuesterHeroesListen());
         }
+        
+        if (!shutdownHookRegistered) { // /reload protection
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    PlayerProfile.saveAll();
+                }
+            }));
+            shutdownHookRegistered = true;
+        }
     }
+
+    private static boolean shutdownHookRegistered = false;
 }

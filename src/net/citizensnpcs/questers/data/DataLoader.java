@@ -18,19 +18,17 @@ public class DataLoader {
 	private static final File questsDir = new File(Citizens.plugin.getDataFolder(), "quests");
     private static final File langFile = new File(Citizens.plugin.getDataFolder(), "quester.lang");
 
-    public static void reload(CommandSender reportRec) {
-        reloadQuests(reportRec);
+    public static void reload(CommandSender reportTo) {
+        reloadQuests(reportTo);
         reloadLang();
     }
     
-    public static void reloadQuests(CommandSender reportRec) {
-        if (reportRec != null) {
-            QuestUtils.dualSend(reportRec, ChatColor.GRAY + "Reloading...", Level.INFO);
-        }
+    private static void reloadQuests(CommandSender reportTo) {
         QuestManager.clearQuests();
+        QuestUtils.dualSend(reportTo, ChatColor.GRAY + "Reloading...", Level.INFO);
 
         if (compatQuestsFile.isFile()) {
-            reportQuestFilesAmount(reportRec, "Default quests.yml", loadQuestsFromFile(compatQuestsFile));
+            loadFileAndReport(compatQuestsFile, reportTo);
         }
 
         if (questsDir.isDirectory()) {
@@ -42,28 +40,25 @@ public class DataLoader {
             });
             if (questFiles != null) {
                 for (File curQuestFile : questFiles) {
-                    reportQuestFilesAmount(reportRec, curQuestFile.getName(), loadQuestsFromFile(curQuestFile));
+                    loadFileAndReport(curQuestFile, reportTo);
                 }
             }
         } else {
             questsDir.mkdir();
         }
 
-        if (reportRec != null) {
-            QuestUtils.dualSend(reportRec, ChatColor.GREEN + "Total " + String.valueOf(QuestManager.quests().size()) + " quests.", Level.INFO);
-        }
+        QuestUtils.dualSend(reportTo, ChatColor.GREEN + "Total " + String.valueOf(QuestManager.quests().size()) + " quests.", Level.INFO);
 	}
 
-    private static int loadQuestsFromFile(File file) {
+    private static void loadFileAndReport(File file, CommandSender reportTo) {
         ReadOnlyStorage storage = new ReadOnlyYamlStorage(file);
-        storage.load();
-        return QuestFactory.loadQuestsFrom(storage);
-    }
-
-    private static void reportQuestFilesAmount(CommandSender reportRec, String fileName, int questAmount) {
-        if (reportRec != null) {
-            QuestUtils.dualSend(reportRec, ChatColor.DARK_PURPLE + fileName + ChatColor.WHITE + ": " +
-                    ChatColor.GREEN + questAmount, Level.INFO);
+        try {
+            storage.load();
+            int fileQuestsTotal = QuestFactory.loadQuestsFrom(storage);
+            QuestUtils.dualSend(reportTo, ChatColor.DARK_PURPLE + file.getName() + ChatColor.WHITE + ": " +
+                    ChatColor.GREEN + fileQuestsTotal, Level.INFO);
+        } catch (Exception ex) {
+            QuestUtils.dualSend(reportTo, "Error loading quest(s) from " + file.getName(), Level.SEVERE);
         }
     }
 

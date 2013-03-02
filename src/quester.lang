@@ -30,11 +30,11 @@ cmd.completed.header: Completed Quests
 cmd.completed.entry: &6$1&a - taking &e$2&a minutes. Completed &e$3&a times
 cmd.status: &aCurrently in the middle of &6$1&a. You have been on this quest for &e$2&a minutes
 cmd.status.completed: &bQuest is completed! Return to giver to finish it
-cmd.status.header: &a-&b Progress report &a-
+cmd.status.header: &a=&b Progress report &a=
 cmd.status.cancel: &7Cancelling quest. Reason: &4$1
 cmd.lang.reloaded: &2Lang reloaded
 
-progress.default-amount: &e$1&a $2 <br>&e$3&a remaining
+progress.default-amount: &e$1&a $2 <br>      &e$3&a remaining
 
 types.build-at.loc: &aBuild block&5$1&a at &e$2
 types.build-at: &aBuild block&5$1&a
@@ -71,6 +71,7 @@ req.perm: &7You don't have the permission &e$1
 req.rank: &7You must be in the group &e$1
 req.quest.must-complete: &7You must have completed the quest &6$1 &a$2&7 times
 req.quest.already-complete: &7You've already completed the quest &6$1
+req.ponline.fail: &7Not enough players online. Need at least &e$1
 
 quest.aborted.not-exists: &7Previous in-progress quest &6$1&7 no longer exists and has been aborted
 quest.not-completed: &7This quest isn't completed yet
@@ -83,3 +84,5 @@ quest.descr.continue: &6Right click to continue description
 quest.repeat.not: &7You are not allowed to repeat this quest again
 quest.repeat.wait: &7You must wait &e$1&7 hours and &e$2&7 minutes before attempting this quest again
 quest.missing-req-header: &cMissing requirements for quest &6$1&c:
+
+heroes.skill-disabled: &7You can not use skill &5$1&7 during quest &6$2

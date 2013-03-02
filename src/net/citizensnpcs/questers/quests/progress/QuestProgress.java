@@ -109,7 +109,7 @@ public class QuestProgress {
             if (cont) {
                 continue;
             }
-            if (progress.update(event)) {
+            if (progress.update(player, event)) {
                 progress.getObjective().onCompletion(player, this);
                 this.progress[i] = null;
             }

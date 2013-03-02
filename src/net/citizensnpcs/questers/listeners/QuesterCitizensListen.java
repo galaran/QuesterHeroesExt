@@ -1,23 +1,23 @@
 package net.citizensnpcs.questers.listeners;
 
-import net.citizensnpcs.api.event.CitizensDisableEvent;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import net.citizensnpcs.api.event.CitizensReloadEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.event.NPCTalkEvent;
 import net.citizensnpcs.questers.QuestManager;
 import net.citizensnpcs.questers.data.DataLoader;
-import net.citizensnpcs.questers.data.PlayerProfile;
 import net.citizensnpcs.utils.Messaging;
-
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class QuesterCitizensListen implements Listener {
-    @EventHandler
-    public void onCitizensDisable(CitizensDisableEvent event) {
-        PlayerProfile.saveAll();
-    }
+    
+    // Do not works because when event fires, Citizens already disabled (and quester so) - Bukkit skips event for this handler
+//    @EventHandler
+//    public void onCitizensDisable(CitizensDisableEvent event) {
+//        PlayerProfile.saveAll();
+//    }
 
     @EventHandler
     public void onCitizensEnable(CitizensEnableEvent event) {
@@ -26,7 +26,7 @@ public class QuesterCitizensListen implements Listener {
 
     @EventHandler
     public void onCitizensReload(CitizensReloadEvent event) {
-        DataLoader.reload(null);
+        DataLoader.reload(Bukkit.getConsoleSender());
     }
 
     @EventHandler

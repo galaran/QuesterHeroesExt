@@ -1,12 +1,10 @@
 package net.citizensnpcs.questers.quests;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
 import net.citizensnpcs.questers.rewards.Requirement;
 import net.citizensnpcs.questers.rewards.Reward;
-import net.citizensnpcs.utils.Messaging;
 
 import org.bukkit.entity.Player;
 
@@ -14,6 +12,7 @@ public class Quest {
     private final List<Reward> abortRewards;
     private final String acceptanceText;
     private final long delay;
+    private final String delayShare;
     private final String description;
     private final RewardGranter granter;
     private final List<Reward> initialRewards;
@@ -23,12 +22,16 @@ public class Quest {
     private final String displayName;
     private final int repeatLimit;
     private final List<Requirement> requirements;
+    private final Set<String> disabledSkills;
+    
+    private final IdentityHashMap<Reward, String> customMessages;
 
-    private Quest(QuestBuilder builder) {
+    private Quest(QuestBuilder builder, IdentityHashMap<Reward, String> questCustomMessages) {
         this.initialRewards = builder.initalRewards;
         this.questName = builder.questName;
         this.displayName = builder.displayName.isEmpty() ? builder.questName : builder.displayName;
         this.delay = builder.delay;
+        this.delayShare = builder.delayShare;
         this.description = builder.description;
         this.acceptanceText = builder.acceptanceText;
         this.granter = builder.granter;
@@ -37,6 +40,8 @@ public class Quest {
         this.repeatLimit = builder.repeatLimit;
         this.abortRewards = builder.abortRewards;
         this.progressText = builder.progressText;
+        this.disabledSkills = builder.disabledSkills;
+        this.customMessages = questCustomMessages;
     }
 
     public List<Reward> getAbortRewards() {
@@ -49,6 +54,10 @@ public class Quest {
 
     public long getDelay() {
         return this.delay;
+    }
+
+    public String getDelayShare() {
+        return delayShare;
     }
 
     // Get the description of a quest
@@ -93,19 +102,32 @@ public class Quest {
         return progressText;
     }
 
+    public String getRewardCustomMessage(Reward reward) {
+        return customMessages.get(reward);
+    }
+
+    /**
+     * Lower case
+     */
+    public Set<String> getDisabledSkills() {
+        return disabledSkills;
+    }
+
     public static class QuestBuilder {
         private List<Reward> abortRewards;
         private String acceptanceText = "";
         private long delay;
+        private String delayShare = "";
         private String description = "";
         private RewardGranter granter;
         private List<Reward> initalRewards;
         private Objectives objectives;
-        public String progressText = "";
+        private String progressText = "";
         private String questName = "";
         private String displayName = "";
         private int repeatLimit = -1;
         private List<Requirement> requirements = new ArrayList<Requirement>();
+        private Set<String> disabledSkills = new HashSet<String>();
 
         public QuestBuilder(String quest) {
             this.questName = quest;
@@ -126,8 +148,8 @@ public class Quest {
             return this;
         }
 
-        public Quest create() {
-            return new Quest(this);
+        public Quest create(IdentityHashMap<Reward, String> questCustomMessages) {
+            return new Quest(this, questCustomMessages);
         }
 
         public QuestBuilder delay(long delay) {
@@ -167,6 +189,18 @@ public class Quest {
 
         public QuestBuilder requirements(List<Requirement> requirements) {
             this.requirements = requirements;
+            return this;
+        }
+
+        public QuestBuilder addDisabledSkills(Iterable<String> disabledSkills) {
+            for (String disabledSkill : disabledSkills) {
+                this.disabledSkills.add(disabledSkill.toLowerCase());
+            }
+            return this;
+        }
+
+        public QuestBuilder delayShare(String questName) {
+            delayShare = questName;
             return this;
         }
     }

@@ -7,11 +7,11 @@ import net.citizensnpcs.questers.api.events.QuestIncrementEvent;
 import net.citizensnpcs.questers.data.PlayerProfile;
 import net.citizensnpcs.questers.quests.CompletedQuest;
 import net.citizensnpcs.questers.quests.Quest;
+import net.citizensnpcs.questers.quests.RewardGranter;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
 import net.citizensnpcs.questers.rewards.Requirement;
 import net.citizensnpcs.questers.rewards.Reward;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -37,30 +37,13 @@ public class QuestManager {
             Messaging.send(player, "quest.repeat.not");
             return false;
         }
-        if (getProfile(player.getName()).hasCompleted(questName) && quest.getDelay() > 0) {
-            long delayDifference = getDelayDifference(
-                    getProfile(player.getName()).getCompletedQuest(questName), quest);
-            if (delayDifference > 0) {
-                long hours = TimeUnit.HOURS.convert(delayDifference, TimeUnit.MINUTES);
-                long minutes = delayDifference - TimeUnit.MINUTES.convert(hours, TimeUnit.HOURS);
-                
-                Messaging.send(player, "quest.repeat.wait", hours, minutes);
-                return false;
-            }
-        }
-
-        // check requirements
-        List<Requirement> missingRequirements = new ArrayList<Requirement>();
-        for (Requirement requirement : quest.getRequirements()) {
-            if (!requirement.fulfilsRequirement(player)) {
-                missingRequirements.add(requirement);
-            }
-        }
-        if (!missingRequirements.isEmpty()) {
+        
+        if (onCooldown(quest, player)) return false;
+        
+        List<Requirement> missing = RewardGranter.checkRequirements(player, quest.getRequirements());
+        if (missing != null) {
             Messaging.send(player, "quest.missing-req-header", QuestManager.getDisplayName(questName));
-            for (Requirement missingRequirement : missingRequirements) {
-                player.sendMessage(ChatColor.GRAY + " - " + ChatColor.RED + missingRequirement.getRequiredText(player));
-            }
+            RewardGranter.printRequirements(player, missing, questName);
             return false;
         }
 
@@ -70,10 +53,10 @@ public class QuestManager {
             return false;
         }
 
-        // process rewards take
+        // process take requirements
         for (Requirement requirement : quest.getRequirements()) {
             if (requirement.isTake()) {
-                requirement.grant(player, UID);
+                RewardGranter.grantWithMessage(questName, requirement, player, UID);
             }
         }
 
@@ -86,9 +69,35 @@ public class QuestManager {
 
         // grant initial rewards
         for (Reward reward : quest.getInitialRewards()) {
-            reward.grant(player, UID);
+            RewardGranter.grantWithMessage(questName, reward, player, UID);
         }
         return true;
+    }
+
+    private static boolean onCooldown(Quest quest, Player player) {
+        String delayShareQuest = quest.getDelayShare();
+        if (!delayShareQuest.isEmpty()) {
+            quest = getQuest(delayShareQuest);
+        }
+        String questName = quest.getName();
+        
+        PlayerProfile profile = getProfile(player.getName());
+        if (profile.hasCompleted(questName) && quest.getDelay() > 0) {
+            long delayDifference = getDelayDifference(profile.getCompletedQuest(questName), quest);
+            if (delayDifference > 0) {
+                long hours = TimeUnit.HOURS.convert(delayDifference, TimeUnit.MINUTES);
+                long minutes = delayDifference - TimeUnit.MINUTES.convert(hours, TimeUnit.HOURS);
+
+                Messaging.send(player, "quest.repeat.wait", hours, minutes);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static long getDelayDifference(CompletedQuest completed, Quest quest) {
+        return quest.getDelay()
+                - TimeUnit.MINUTES.convert(System.currentTimeMillis() - completed.getFinishTime(), TimeUnit.MILLISECONDS);
     }
 
     public static boolean canRepeat(Player player, Quest quest) {
@@ -114,16 +123,18 @@ public class QuestManager {
         profile.setProgress(null);
         int completed = profile.hasCompleted(quest.getName()) ? profile.getCompletedQuest(quest.getName())
                 .getTimesCompleted() + 1 : 1;
-        CompletedQuest comp = new CompletedQuest(quest.getName(), UID, completed, elapsed,
-                System.currentTimeMillis());
+        CompletedQuest comp = new CompletedQuest(quest.getName(), UID, completed, elapsed, System.currentTimeMillis());
         profile.addCompletedQuest(comp);
         Bukkit.getServer().getPluginManager().callEvent(new QuestCompleteEvent(quest, comp, player));
-    }
-
-    private static long getDelayDifference(CompletedQuest completed, Quest quest) {
-        return quest.getDelay()
-                - TimeUnit.MINUTES.convert(System.currentTimeMillis() - completed.getFinishTime(),
-                        TimeUnit.MILLISECONDS);
+        
+        String delayQuestName = quest.getDelayShare();
+        if (!delayQuestName.isEmpty()) {
+            // same or 0
+            int timesCompleted = profile.hasCompleted(delayQuestName) ? profile.getCompletedQuest(delayQuestName).getTimesCompleted() : 0;
+            
+            CompletedQuest compShared = new CompletedQuest(delayQuestName, UID, timesCompleted, elapsed, System.currentTimeMillis());
+            profile.addCompletedQuest(compShared);
+        }
     }
 
     private static PlayerProfile getProfile(String string) {

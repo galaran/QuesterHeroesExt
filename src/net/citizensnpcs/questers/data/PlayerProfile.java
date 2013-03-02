@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerProfile {
+    
     private final Map<String, CompletedQuest> completedQuests = Maps.newHashMap();
 
     private long lastSave;

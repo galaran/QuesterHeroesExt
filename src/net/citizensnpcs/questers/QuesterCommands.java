@@ -9,8 +9,10 @@ import net.citizensnpcs.questers.api.events.QuestCancelEvent;
 import net.citizensnpcs.questers.data.DataLoader;
 import net.citizensnpcs.questers.data.PlayerProfile;
 import net.citizensnpcs.questers.quests.CompletedQuest;
+import net.citizensnpcs.questers.quests.RewardGranter;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestProgress;
+import net.citizensnpcs.questers.rewards.Requirement;
 import net.citizensnpcs.questers.rewards.Reward;
 import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.resources.sk89q.*;
@@ -69,10 +71,12 @@ public class QuesterCommands extends CommandHandler {
         } else {
             Bukkit.getPluginManager().callEvent(
                     new QuestCancelEvent(QuestManager.getQuest(profile.getProgress().getQuestName()), player));
+            
             List<Reward> abort = QuestManager.getQuest(profile.getQuest()).getAbortRewards();
             if (abort != null) {
-                for (Reward reward : abort)
-                    reward.grant(player, profile.getProgress().getQuesterUID());
+                for (Reward reward : abort) {
+                    RewardGranter.grantWithMessage(profile.getQuest(), reward, player, profile.getProgress().getQuesterUID());
+                }
             }
             profile.setProgress(null);
             Messaging.send(player, "cmd.abort.ok");
@@ -403,9 +407,12 @@ public class QuesterCommands extends CommandHandler {
                         continue;
                     try {
                         String statusText = progress.getStatusText();
-                        if (!statusText.isEmpty()) {
-                            // We need Citizens formatting here
-                            net.citizensnpcs.utils.Messaging.send(player, StringUtils.wrap("  - ", ChatColor.WHITE) + statusText);
+                        // We need Citizens formatting here
+                        net.citizensnpcs.utils.Messaging.send(player, StringUtils.wrap(" - ", ChatColor.WHITE) + statusText);
+                        
+                        List<Requirement> objectiveReqs = progress.getObjective().getRequirements();
+                        if (!objectiveReqs.isEmpty()) {
+                            RewardGranter.printRequirements(player, objectiveReqs, profile.getProgress().getQuestName());
                         }
                     } catch (QuestCancelException ex) {
                         Messaging.send(player, "cmd.status.cancel", ex.getReason());
