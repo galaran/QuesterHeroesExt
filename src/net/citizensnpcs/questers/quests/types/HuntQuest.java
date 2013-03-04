@@ -5,14 +5,14 @@ import com.google.common.base.Splitter;
 import me.galaran.bukkitutils.questerhex.text.Messaging;
 import me.galaran.bukkitutils.questerhex.text.StringUtils;
 import net.citizensnpcs.questers.QuestUtils;
+import net.citizensnpcs.questers.quests.events.PlayerKillLivingEvent;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class HuntQuest implements QuestUpdater {
 
-    private static final Class[] EVENTS = new Class[] { EntityDeathEvent.class };
+    private static final Class[] EVENTS = new Class[] { PlayerKillLivingEvent.class };
     
     @SuppressWarnings("unchecked")
     @Override
@@ -48,16 +48,13 @@ public class HuntQuest implements QuestUpdater {
 
     @Override
     public boolean update(Event event, ObjectiveProgress progress) {
-        if (event instanceof EntityDeathEvent) {
-            Entity entity = ((EntityDeathEvent) event).getEntity();
-            
-            if (!(entity instanceof Player) && !entity.hasMetadata("summoned-entity")) {
-                Set<String> questEntities = getTargetTypes(progress);
-                // empty set -> any type
-                if (questEntities.isEmpty() || questEntities.contains(entity.getType().getName().toLowerCase())) {
-                    progress.addAmount(1);
-                }
-            }
+        LivingEntity killed = ((PlayerKillLivingEvent) event).getKilled();
+
+        if (killed instanceof Player || killed.hasMetadata("summoned-entity")) return false;
+
+        Set<String> questEntities = getTargetTypes(progress);
+        if (questEntities.isEmpty() || questEntities.contains(killed.getType().getName().toLowerCase())) { // empty set -> any type
+            progress.addAmount(1);
         }
         return progress.getAmount() >= progress.getObjective().getAmount();
     }

@@ -61,7 +61,6 @@ public class QuestAPI {
         questTypes.put("destroy block", new DestroyQuest());
         questTypes.put("delivery", new DeliveryQuest());
         questTypes.put("hunt", new HuntQuest());
-        addQuestType(new KillNPCQuest(), "killnpc");
         addQuestType(new DistanceQuest(), "move distance", "distance");
         addQuestType(new LocationQuest(), "move location", "moveloc", "location", "loc");
         addQuestType(new CombatQuest(), "player combat", "combat");

@@ -8,6 +8,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 /*
+ * For use with optional objective
+ * 
  * type: death
  * status-message: 'Quest will be failed, if you die'
  */

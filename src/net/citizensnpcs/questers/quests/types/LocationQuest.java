@@ -17,8 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 public class LocationQuest implements QuestUpdater {
 
-    private static final Class<? extends Event>[] EVENTS = new Class[] { PlayerMoveEvent.class };
+    private static final Class[] EVENTS = new Class[] { PlayerMoveEvent.class };
     
+    @SuppressWarnings("unchecked")
     @Override
     public Class<? extends Event>[] getEventTypes() {
         return EVENTS;

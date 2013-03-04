@@ -10,12 +10,12 @@ import org.bukkit.event.player.*;
 public class QuesterPlayerListen implements Listener {
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerDropItem(PlayerDropItemEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
         QuestManager.incrementQuest(event.getPlayer(), event);
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerMove(PlayerMoveEvent event) {
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
         QuestManager.incrementQuest(event.getPlayer(), event);
     }
 

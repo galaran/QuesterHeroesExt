@@ -3,7 +3,6 @@ package net.citizensnpcs.questers;
 import me.galaran.bukkitutils.questerhex.text.Messaging;
 import net.citizensnpcs.questers.api.events.QuestBeginEvent;
 import net.citizensnpcs.questers.api.events.QuestCompleteEvent;
-import net.citizensnpcs.questers.api.events.QuestIncrementEvent;
 import net.citizensnpcs.questers.data.PlayerProfile;
 import net.citizensnpcs.questers.quests.CompletedQuest;
 import net.citizensnpcs.questers.quests.Quest;
@@ -161,22 +160,16 @@ public class QuestManager {
     }
 
     public static void incrementQuest(Player player, Event event) {
-        if (event == null || (event instanceof Cancellable && ((Cancellable) event).isCancelled()))
-            return;
-        if (hasQuest(player)) {
-            QuestProgress progress = getProfile(player.getName()).getProgress();
-            if (progress.isFullyCompleted())
-                return;
-            QuestIncrementEvent incrementEvent = new QuestIncrementEvent(QuestManager.getQuest(progress
-                    .getQuestName()), player, event);
-            Bukkit.getPluginManager().callEvent(incrementEvent);
-            if (incrementEvent.isCancelled())
-                return;
-            progress.updateProgress(player, event);
-            if (progress.isStepCompleted()) {
-                progress.onStepCompletion();
-                progress.cycle();
-            }
+        if (event == null || (event instanceof Cancellable && ((Cancellable) event).isCancelled())) return;
+        if (!hasQuest(player)) return;
+        
+        QuestProgress progress = getProfile(player.getName()).getProgress();
+        if (progress.isFullyCompleted()) return;
+        
+        progress.updateProgress(player, event);
+        if (progress.isStepCompleted()) {
+            progress.onStepCompletion();
+            progress.cycle();
         }
     }
 

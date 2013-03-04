@@ -92,23 +92,22 @@ public class QuestProgress {
     }
 
     public void updateProgress(Player player, Event event) {
-        if (progress == null)
-            return;
+        if (progress == null) return;
+        
+        Class<? extends Event> eventClass = event.getClass();
         for (int i = 0; i < progress.length; ++i) {
-            if (progress[i] == null) {
-                continue;
-            }
+            if (progress[i] == null) continue;
             ObjectiveProgress progress = this.progress[i];
-            boolean cont = true;
-            for (Class<? extends Event> type : progress.getEventTypes()) {
-                if (type.isAssignableFrom(event.getClass())) {
-                    cont = false;
+            
+            boolean matched = false;
+            for (Class<? extends Event> listenerClass : progress.getEventTypes()) {
+                if (listenerClass.isAssignableFrom(eventClass)) {
+                    matched = true;
                     break;
                 }
             }
-            if (cont) {
-                continue;
-            }
+            if (!matched) continue;
+            
             if (progress.update(player, event)) {
                 progress.getObjective().onCompletion(player, this);
                 this.progress[i] = null;
