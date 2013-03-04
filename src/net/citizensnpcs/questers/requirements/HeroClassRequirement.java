@@ -31,7 +31,7 @@ public class HeroClassRequirement implements Requirement {
     public boolean fulfilsRequirement(Player player) {
         Hero hero = QuestAPI.getHeroFor(player);
         HeroClass heroClass = secondary ? hero.getSecondClass() : hero.getHeroClass();
-        return matchsClass(heroClass, exact);
+        return heroClass != null && matchsClass(heroClass, exact);
     }
 
     private boolean matchsClass(HeroClass heroClass, boolean exact) {

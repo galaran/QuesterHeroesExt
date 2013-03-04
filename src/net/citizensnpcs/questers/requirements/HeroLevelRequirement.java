@@ -28,6 +28,8 @@ public class HeroLevelRequirement implements Requirement {
     public boolean fulfilsRequirement(Player player) {
         Hero hero = QuestAPI.getHeroFor(player);
         HeroClass heroClass = secondary ? hero.getSecondClass() : hero.getHeroClass();
+        if (heroClass == null) return false;
+        
         int heroTier = heroClass.getTier();
 
         if (heroTier < tier) {

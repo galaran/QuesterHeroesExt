@@ -32,6 +32,8 @@ public class HeroExpReward implements Reward {
         } else {
             Hero hero = QuestAPI.getHeroFor(player);
             HeroClass heroClass = secondary ? hero.getSecondClass() : hero.getHeroClass();
+            if (heroClass == null) return;
+            
             Integer tieredAmount = byTier.get(heroClass.getTier());
             amount = tieredAmount == null ? exp : tieredAmount;
         }
